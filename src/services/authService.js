@@ -1,5 +1,5 @@
 import axios from "axios";
-const API = "http://localhost:8000/api/users";
+const API = "http://lww0004ko0kcck8oc44k44wo.31.97.227.219.sslip.io/api/users";
 
 
 
@@ -62,10 +62,10 @@ export const refreshAccessToken = async () => {
 };
 
 // Get Current User
-export const getallUsers = async () => {
+export const getallUsers = async (page=1 , limit=6 , status="", filter="") => {
     const token = sessionStorage.getItem("token")
 
-  const res = await axios.get(`${API}/get-users`, {
+  const res = await axios.get(`${API}/get-users?page=${page}&limit=${limit}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -76,6 +76,20 @@ export const getallUsers = async () => {
 // Change Current Password
 export const changePassword = async (data, token) => {
   const res = await axios.post(`${API}/change-password`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+};
+ 
+
+// get User
+
+export const getCurrentUser = async () => {
+    const token = sessionStorage.getItem("token")
+
+  const res = await axios.get(`${API}/current-user`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

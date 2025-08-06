@@ -1,9 +1,24 @@
 // nav-data.ts
 import { useUserStore } from "@/store/userStore";
 import * as Icons from "../icons";
+import { getCurrentUser } from "@/services/authService";
+import { useEffect, useState } from "react";
 
 export function useNavData() {
-  const user = useUserStore((state) => state.user);
+  
+  const [role ,setRole] = useState("")
+
+  const getUser = async() => {
+    const res = await getCurrentUser();
+    console.log(res?.data?.role ,"roleelore")
+    setRole(res?.data?.role)
+
+      
+  }
+
+ useEffect(() => {
+  getUser()
+ },[])
 
   return [
     {
@@ -15,7 +30,7 @@ export function useNavData() {
           icon: Icons.Calendar,
           items: [],
         },
-        ...(user?.role === "ADMIN"
+        ...(role === "ADMIN"
           ? [
               {
                 title: "Users",

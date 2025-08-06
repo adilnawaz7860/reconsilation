@@ -19,7 +19,9 @@ import { useUserStore } from "@/store/userStore";
 export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
     const user = useUserStore((state) => state.user);
-    console.log(user , 'suerdss')
+
+    
+   
 
   const router = useRouter();
 

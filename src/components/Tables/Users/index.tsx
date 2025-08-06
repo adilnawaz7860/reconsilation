@@ -21,17 +21,43 @@ import UpdateUserModal from "./UpdateUserModal";
 
 
 export default function UserTable() {
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [open, setOpen] = useState(false);
+   const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
   const [users ,setUsers] = useState([]);
   const [refresh ,setRefresh] = useState(false);
   const [editableData, setEditableData] = useState({});
+   const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [search, setSearch] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [loading ,setLoading] = useState(false);
+    const rowsPerPage = 4;
+  
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const data = await getallUsers(currentPage, rowsPerPage, search, statusFilter);
+        setUsers(data?.data?.transactions || []);
+        setTotalPages(data?.data?.totalPages || 1);
+      } catch (err) {
+        console.error("Failed to fetch transactions", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    useEffect(() => {
+      fetchUsers();
+    }, []);
+  
+      const formatDate = (dateStr : any) =>
+    new Intl.DateTimeFormat("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(new Date(dateStr));
+  
+   
 
-  const rowsPerPage = 10;
 
 
   useEffect(() => {
@@ -40,7 +66,7 @@ export default function UserTable() {
         const res = await getallUsers(); 
         console.log(res, "res")// assumes it returns an array
         if (res.statusCode === 200) {
-          setUsers(res.data);
+          setUsers(res?.data?.users);
         }
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -58,30 +84,10 @@ export default function UserTable() {
     
   }
 
-  const filteredUsers = users.filter((user : any) => {
-    const matchesSearch =
-      user?.fullName?.toLowerCase().includes(search.toLowerCase()) ||
-      user?.email?.toLowerCase().includes(search.toLowerCase()) ||
-      user?.phone?.includes(search);
-
-    const matchesStatus = statusFilter === "all" || user.status === statusFilter;
-
-    return matchesSearch && matchesStatus;
-  });
-
-  const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
-  const paginatedData = filteredUsers.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-
-  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
-  useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timeout);
-  }, []);
+
 
   return (
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
@@ -138,8 +144,8 @@ export default function UserTable() {
                 </TableCell>
               </TableRow>
             ))
-          ) : paginatedData.length > 0 ? (
-            paginatedData.map((user : any) => (
+          ) : users.length > 0 ? (
+            users.map((user : any) => (
               <TableRow key={user._id}>
                 <TableCell className="text-left">{user.fullName}</TableCell>
                 <TableCell>{user.email}</TableCell>

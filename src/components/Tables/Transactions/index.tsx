@@ -10,54 +10,51 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-// Dummy transaction data
-const dummyTransactions = [
-  { id: 1, name: "Adil Nawaz", email: "adil@example.com", amount: 1200, status: "completed", date: "Aug 6, 2025" },
-  { id: 2, name: "Sara Khan", email: "sara@example.com", amount: 850, status: "pending", date: "Aug 5, 2025" },
-  { id: 3, name: "Ravi Sharma", email: "ravi@example.com", amount: 199.99, status: "failed", date: "Aug 4, 2025" },
-  { id: 4, name: "Nikita Jain", email: "nikita@example.com", amount: 560, status: "completed", date: "Aug 3, 2025" },
-  { id: 5, name: "Zain Ali", email: "zain@example.com", amount: 1100, status: "completed", date: "Aug 2, 2025" },
-  { id: 6, name: "Priya Singh", email: "priya@example.com", amount: 750, status: "pending", date: "Aug 2, 2025" },
-  { id: 7, name: "Amit Raj", email: "amit@example.com", amount: 999.99, status: "completed", date: "Aug 1, 2025" },
-  { id: 8, name: "Neha Mehra", email: "neha@example.com", amount: 620, status: "failed", date: "Jul 30, 2025" },
-  { id: 9, name: "Rohit Das", email: "rohit@example.com", amount: 890, status: "completed", date: "Jul 29, 2025" },
-  { id: 10, name: "Simran Kaur", email: "simran@example.com", amount: 430, status: "pending", date: "Jul 28, 2025" },
-];
+import { getallTransactions } from "@/services/transactionService";
 
 export default function LatestTransactionsTable() {
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const rowsPerPage = 4;
 
+  const fetchTransactions = async () => {
+    try {
+      setLoading(true);
+      const data = await getallTransactions(currentPage, rowsPerPage, search, statusFilter);
+      setTransactions(data?.data?.transactions || []);
+      setTotalPages(data?.data?.totalPages || 1);
+    } catch (err) {
+      console.error("Failed to fetch transactions", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timeout);
-  }, []);
+    fetchTransactions();
+  }, [currentPage, search, statusFilter]);
 
-  const filteredTransactions = dummyTransactions.filter((tx) => {
-    const matchesSearch =
-      tx.name.toLowerCase().includes(search.toLowerCase()) ||
-      tx.email.toLowerCase().includes(search.toLowerCase());
+   const formatDate = (dateStr?: string) => {
+  if (!dateStr) return "Invalid Date";
 
-    const matchesStatus = statusFilter === "all" || tx.status === statusFilter;
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return "Invalid Date";
 
-    return matchesSearch && matchesStatus;
-  });
+  return new Intl.DateTimeFormat("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+};
 
-  const totalPages = Math.ceil(filteredTransactions.length / rowsPerPage);
-  const paginatedData = filteredTransactions.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
 
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-
   return (
-    <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
+    <div className="rounded-[10px] bg-white px-4 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-end mb-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <input
@@ -88,11 +85,17 @@ export default function LatestTransactionsTable() {
       <Table>
         <TableHeader>
           <TableRow className="[&>th]:text-center">
-            <TableHead className="text-left"><div className="flex justify-start">User</div></TableHead>
-            <TableHead className="flex items-center justify-start"><div>Email</div></TableHead>
+             <TableHead className="text-left"><div className="flex justify-start">TransactionId</div></TableHead>
+            <TableHead className="flex items-center justify-start"><div>OrderID</div></TableHead>
             <TableHead className="text-right"><div className="flex justify-start">Amount</div></TableHead>
-            <TableHead className="text-center">Status</TableHead>
-            <TableHead className="text-center">Date</TableHead>
+            <TableHead className="text-center">Type</TableHead>
+            <TableHead className="text-center">Email</TableHead>
+             <TableHead className="text-center">UTR</TableHead>
+              <TableHead className="text-center">Amount</TableHead>
+               <TableHead className="text-center">Status</TableHead>
+                {/* <TableHead className="text-center">Webhook Time</TableHead> */}
+                <TableHead className="text-center">Created At</TableHead>
+                <TableHead className="text-center">Updated At</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -104,18 +107,22 @@ export default function LatestTransactionsTable() {
                 </TableCell>
               </TableRow>
             ))
-          ) : paginatedData.length > 0 ? (
-            paginatedData.map((tx) => (
-              <TableRow key={tx.id}>
-                <TableCell className="text-left">{tx.name}</TableCell>
-                <TableCell>{tx.email}</TableCell>
+          ) : transactions.length > 0 ? (
+            transactions.map((tx : any) => (
+              <TableRow key={tx._id}>
+                <TableCell className="text-left">{tx?.transactionid}</TableCell>
+                <TableCell>{tx.orderid}</TableCell>
+                   <TableCell>{tx.amount}</TableCell>
+                    <TableCell>{tx.type}</TableCell>
+                       <TableCell>{tx.merchantid?.email}</TableCell>
+                         <TableCell>{tx.utr}</TableCell>
                 <TableCell>${tx.amount.toFixed(2)}</TableCell>
                 <TableCell className="text-center">
                   <span
                     className={`text-sm font-medium capitalize ${
                       tx.status === "completed"
                         ? "text-green-600"
-                        : tx.status === "pending"
+                        : tx.status === "PENDING"
                         ? "text-yellow-500"
                         : "text-red-500"
                     }`}
@@ -123,7 +130,11 @@ export default function LatestTransactionsTable() {
                     {tx.status}
                   </span>
                 </TableCell>
-                <TableCell className="text-center">{tx.date}</TableCell>
+                  {/* <TableCell className="text-center">{formatDate(tx.webhookTime)}</TableCell> */}
+
+                <TableCell className="text-center">{formatDate(tx.createdAt)}</TableCell>
+                <TableCell className="text-center">{formatDate(tx.updatedAt)}</TableCell>
+               
               </TableRow>
             ))
           ) : (
@@ -136,7 +147,7 @@ export default function LatestTransactionsTable() {
         </TableBody>
       </Table>
 
-      {!loading && totalPages > 1 && (
+     {!loading && totalPages > 1 && (
         <div className="flex justify-end items-center gap-4 mt-4">
           <button
             onClick={handlePrev}
