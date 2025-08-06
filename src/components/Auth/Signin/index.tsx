@@ -130,14 +130,14 @@ export default function SigninWithPassword() {
           </Form>
         )}
       </Formik>
-       <div className="mt-6 text-center">
+       {/* <div className="mt-6 text-center">
         <p>
           Don’t have any account?{" "}
           <Link href="/auth/sign-up" className="text-primary">
             Sign Up
           </Link>
         </p>
-      </div>
+      </div> */}
     </div>
   );
 }
