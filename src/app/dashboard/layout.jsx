@@ -44,7 +44,7 @@ const Layout = ({ children }) => {
           </main>
         </div>
       </div>
-          <Toaster/>
+          <Toaster richColors/>
     </Providers>
   );
 };

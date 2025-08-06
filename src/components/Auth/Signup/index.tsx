@@ -7,6 +7,7 @@ import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Image from "next/image";
 import logo from "@/assets/logos/main.svg";
+import { Code2 } from "lucide-react";
 
 // Validation schema (updated)
 const SignupSchema = Yup.object().shape({
@@ -28,16 +29,9 @@ export default function SignUpWithPassword() {
     <div className="max-h-[500px] overflow-auto">
       {/* Top Header */}
       <div className="mb-6 flex items-center justify-between">
-        <div className="relative h-12 w-[200px]">
-          <Image
-            src={logo}
-            fill
-            className="dark:hidden"
-            alt="wisepay logo"
-            role="presentation"
-            quality={100}
-          />
-        </div>
+         <div className="px-0 py-2.5 flex gap-2 items-center   text-3xl font-bold text-primary min-[850px]:py-0"
+            >
+             <Code2 className="text-xl"/> Wise-pay </div>
       </div>
 
       <Formik

@@ -11,7 +11,7 @@ export async function getOverviewData() {
       value: 4220,
       growthRate: 4.35,
     },
-    products: {
+    transactions: {
       value: 3456,
       growthRate: 2.59,
     },

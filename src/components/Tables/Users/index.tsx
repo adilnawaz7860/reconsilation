@@ -86,15 +86,10 @@ export default function UserTable() {
         </div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-             <button
-            onClick={() => setOpen(true)}
-            className="ml-4 rounded bg-primary px-4 py-2 text-white hover:bg-opacity-90"
-          >
-            Create User
-          </button>
+           
           <input
             className="border border-gray-3 p-3"
-            placeholder="Search by name, email or phone"
+            placeholder="Search by name, email"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -107,6 +102,12 @@ export default function UserTable() {
             <option value="ACTIVE">Active</option>
             <option value="INACTIVE">Inactive</option>
           </select>
+            <button
+            onClick={() => setOpen(true)}
+            className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
+          >
+            Create User
+          </button>
         </div>
       </div>
 

@@ -7,7 +7,8 @@ import { useState } from "react";
 import { CameraIcon } from "./_components/icons";
 import { SocialAccounts } from "./_components/social-accounts";
 import { getInitials } from "@/libs/utils";
-import { Input } from '@/components/ui/input'
+import { useUserStore } from "@/store/userStore";
+import UpdateUserModal from "./updateUserProfile";
 
 export default function Page() {
   const [data, setData] = useState({
@@ -15,6 +16,9 @@ export default function Page() {
     profilePhoto: "/images/user/user-03.png",
     coverPhoto: "/images/cover/cover-01.png",
   });
+   const user = useUserStore((state) => state.user);
+   const [open ,setOpen] = useState(false);
+      console.log(user , 'suerdss')
 
   const handleChange = (e: any) => {
     if (e.target.name === "profilePhoto" ) {
@@ -56,7 +60,7 @@ export default function Page() {
               height: "auto",
             }}
           />
-          <div className="absolute bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4">
+          <div onClick={() =>setOpen(true)} className="absolute  bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4">
             <label
               htmlFor="cover"
               className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-[15px] py-[5px] text-body-sm font-medium text-white hover:bg-opacity-90"
@@ -65,14 +69,14 @@ export default function Page() {
                 type="file"
                 name="coverPhoto"
                 id="coverPhoto"
-                className="sr-only"
+                className="sr-only p-2 rounded border border-gray-3"
                 onChange={handleChange}
                 accept="image/png, image/jpg, image/jpeg"
               />
 
               <CameraIcon />
 
-              <span>Edit</span>
+              <span onClick={() =>setOpen(true)}>Edit</span>
             </label>
           </div>
         </div>
@@ -81,18 +85,12 @@ export default function Page() {
         <div className="relative drop-shadow-2 flex items-center justify-center overflow-hidden rounded-full bg-primary text-white text-4xl font-bold h-full w-full">
           {data?.profilePhoto ? (
             <>
-              <Image
-                src={data.profilePhoto}
-                width={160}
-                height={160}
-                className="rounded-full"
-                alt="profile"
-              />
+              {getInitials(user?.name)}
               <label
                 htmlFor="profilePhoto"
                 className="absolute bottom-0 right-0 flex size-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2"
               >
-                <CameraIcon />
+                {/* <CameraIcon /> */}
                 <input
                   type="file"
                   name="profilePhoto"
@@ -104,47 +102,40 @@ export default function Page() {
               </label>
             </>
           ) : (
-            getInitials(data?.name)
+            getInitials(user?.name)
           )}
         </div>
       </div>
 
       <div className="mt-4">
         <h3 className="mb-1 text-heading-6 font-bold text-dark dark:text-white">
-          {data?.name}
+          {user?.name}
         </h3>
         <p className="font-medium text-body-sm text-muted-foreground">
-          {"No email provided"}
+         {user?.email}
         </p>
 
-        <div className="mx-auto mb-5.5 mt-5 grid max-w-[370px] grid-cols-1 gap-4">
-          <Input
-            value={data?.name || ""}
+        {/* <div className="mx-auto mb-5.5 mt-5 grid max-w-[370px] grid-cols-1 gap-4">
+          <input
+            value={user?.name || ""}
             readOnly
-            className="cursor-default"
+            className="cursor-default border p-2 rounded-full"
             placeholder="Name"
           />
-          <Input
-            value={""}
+           <input
+            value={user?.email || ""}
             readOnly
-            className="cursor-default"
-            placeholder="Email"
+            className="cursor-default border p-2 rounded-full"
+            placeholder="Name"
           />
-        </div>
+        </div> */}
 
-        <div className="mx-auto max-w-[720px]">
-          <h4 className="font-medium text-dark dark:text-white">About Me</h4>
-          <p className="mt-4 text-sm text-muted-foreground">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Pellentesque posuere fermentum urna, eu condimentum mauris
-            tempus ut...
-          </p>
-        </div>
 
         {/* <SocialAccounts /> */}
       </div>
     </div>
       </div>
+      <UpdateUserModal open={open} onClose={() => setOpen(false)} />
     </div>
   );
 }
