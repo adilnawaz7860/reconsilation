@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 
 import CreateUserModal from "./CreateUserModal";
-import { getallUsers, updateUserStatus } from "@/services/authService";
+import { getallUsers, getCurrentUser, updateUserStatus } from "@/services/authService";
 import { Switch } from "@/components/FormElements/switch";
 import { toast } from "sonner";
 import UpdateUserModal from "./UpdateUserModal";
@@ -29,16 +29,26 @@ export default function UserTable() {
    const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [search, setSearch] = useState("");
+    const [role ,setRole] = useState("")
     const [statusFilter, setStatusFilter] = useState("all");
     const [loading ,setLoading] = useState(false);
     const rowsPerPage = 4;
     
+    
+      const getUser = async() => {
+        const res = await getCurrentUser();
+        setRole(res?.data?.role)
+    
+          
+      }
+    
+     useEffect(() => {
+      getUser()
+     },[])
+    
 
     
-  
- 
-  
-      const formatDate = (dateStr : any) =>
+    const formatDate = (dateStr : any) =>
     new Intl.DateTimeFormat("en-IN", {
       dateStyle: "medium",
       timeStyle: "short",
@@ -102,14 +112,19 @@ export default function UserTable() {
         </div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-           
-        
-            <button
+          {
+            role === "ADMIN" && (
+                 <button
             onClick={() => setOpen(true)}
             className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
           >
             Create User
           </button>
+            )
+          }
+           
+        
+         
         </div>
       </div>
 

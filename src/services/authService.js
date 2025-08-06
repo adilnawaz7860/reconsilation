@@ -14,16 +14,22 @@ export const loginUser = async (credentials) => {
 
 // Update User Status
 export const updateUserStatus = async (id ,) => {
+   const token = sessionStorage.getItem("token")
   const res = await axios.post(`${API}/update-status/${id}`, {}, {
-    withCredentials: true,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
   return res.data;
 };
 
 // Update User
 export const updateUserById = async (id ,data) => {
+   const token = sessionStorage.getItem("token")
   const res = await axios.patch(`${API}/update-user/${id}`, data, {
-    withCredentials: true,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
   return res.data;
 };

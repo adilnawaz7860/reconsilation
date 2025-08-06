@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InputGroup from "../../FormElements/InputGroup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -21,6 +21,9 @@ const SigninSchema = Yup.object().shape({
 
 export default function SigninWithPassword() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+useEffect(() => setMounted(true), []);
+if (!mounted) return null;
   return (
     <div>
       {/* Top Header */}
@@ -42,12 +45,14 @@ export default function SigninWithPassword() {
   setSubmitting(true);
   try {
      const res = await loginUser(values)
+       console.log(res , "responsne")
       const { accessToken, refreshToken,name, user,email, role } = res.data;
      
         useUserStore.getState().setUser({ name : user.fullName, email : user.email, role });
      
 
     // Save token to sessionStorage
+    console.log()
     sessionStorage.setItem("token", accessToken);
 
     toast.success("Signed in successfully!");

@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { toast } from "sonner";
 import * as Yup from "yup";
+import {upLoadFile}  from '@/services/fileService'
 
 type Props = {
   open: boolean;
@@ -35,30 +36,36 @@ export default function CreateImportModal({ open, onClose, setRefresh }: Props) 
     onSubmit: async (values, { resetForm }) => {
       try {
         setLoading(true);
-        const formData = new FormData();
-        formData.append("file", values.file as File);
-
-        const res = await fetch("/api/upload-excel", {
-          method: "POST",
-          body: formData,
-        });
-
-        const result = await res.json();
-
-        if (res.ok) {
-          toast.success(result.message || "File uploaded successfully");
+        const res = await upLoadFile(values.file)
+      if(res.statusCode === 200){
           resetForm();
+          toast.success(res?.message || "File uploaded successfully");
           onClose();
-          setRefresh((prev: any) => !prev);
-        } else {
+
+
+      }else{
+              onClose();
+         toast.error(res.message || "Upload failed");
+
+      }
+      
+
+     
+
+        // if (res.ok) {
+        //   toast.success(result.message || "File uploaded successfully");
+        //   resetForm();
+        //   onClose();
+        //   setRefresh((prev: any) => !prev);
+        // } else {
           
-          onClose();
-          toast.error(result.message || "Upload failed");
-        }
+        //   onClose();
+        //   toast.error(result.message || "Upload failed");
+        // }
       } catch (error: any) {
           
           onClose();
-        toast.error("Something went wrong during file upload.");
+        toast.error(error?.response?.data?.message || error?.response?.message);
       } finally {
         setLoading(false);
       }
