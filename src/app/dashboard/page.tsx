@@ -9,6 +9,7 @@ import { ChatsCard } from "../(home)/_components/chats-card";
 import { OverviewCardsGroup } from "../(home)/_components/overview-cards";
 import { OverviewCardsSkeleton } from "../(home)/_components/overview-cards/skeleton";
 import { RegionLabels } from "../(home)/_components/region-labels";
+import { LatestTransactions } from "@/components/Tables/latest-transactions";
 
 type PropsType = {
   searchParams: Promise<{
@@ -48,9 +49,7 @@ export default async function Home({ searchParams }: PropsType) {
         <RegionLabels /> */}
 
         <div className="col-span-12">
-          <Suspense fallback={<TopChannelsSkeleton />}>
-            <TopChannels />
-          </Suspense>
+         <LatestTransactions/>
         </div>
 
       

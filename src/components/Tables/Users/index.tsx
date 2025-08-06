@@ -11,33 +11,64 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import CreateUserModal from "./CreateUserModal";
+import { getallUsers, updateUserStatus } from "@/services/authService";
+import { Switch } from "@/components/FormElements/switch";
+import { toast } from "sonner";
+
 // Dummy user data
-const dummyUsers = [
-  { id: 1, name: "Adil Nawaz", email: "adil@example.com", phone: "9876543210", status: "active" },
-  { id: 2, name: "Sara Khan", email: "sara@example.com", phone: "9123456789", status: "inactive" },
-  { id: 3, name: "Ravi Sharma", email: "ravi@example.com", phone: "9988776655", status: "active" },
-  { id: 4, name: "Nikita Jain", email: "nikita@example.com", phone: "9112233445", status: "inactive" },
-  { id: 5, name: "Zain Ali", email: "zain@example.com", phone: "9001122334", status: "active" },
-];
+
 
 export default function UserTable() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [users ,setUsers] = useState([]);
+  const [refresh ,setRefresh] = useState(false);
 
-  const filteredUsers = dummyUsers.filter((user) => {
+  const rowsPerPage = 10;
+
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await getallUsers(); 
+        console.log(res, "res")// assumes it returns an array
+        if (res.statusCode === 200) {
+          setUsers(res.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, [refresh]);
+
+  const filteredUsers = users.filter((user : any) => {
     const matchesSearch =
-      user.name.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase()) ||
-      user.phone.includes(search);
+      user?.fullName?.toLowerCase().includes(search.toLowerCase()) ||
+      user?.email?.toLowerCase().includes(search.toLowerCase()) ||
+      user?.phone?.includes(search);
 
-    const matchesStatus =
-      statusFilter === "all" || user.status === statusFilter;
+    const matchesStatus = statusFilter === "all" || user.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
 
-  // Simulate loading
+  const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
+  const paginatedData = filteredUsers.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+
   useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timeout);
@@ -45,36 +76,49 @@ export default function UserTable() {
 
   return (
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
+      {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
-        <h2 className="text-xl font-bold text-dark dark:text-white">
-          User List
-        </h2>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="flex items-center justify-between w-full md:w-auto">
+          <h2 className="text-xl font-bold text-dark dark:text-white">
+            User List
+          </h2>
+       
+        </div>
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+             <button
+            onClick={() => setOpen(true)}
+            className="ml-4 rounded bg-primary px-4 py-2 text-white hover:bg-opacity-90"
+          >
+            Create User
+          </button>
           <input
+            className="border border-gray-3 p-3"
             placeholder="Search by name, email or phone"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <select
-            className="border p-2 rounded-md text-sm dark:bg-gray-800 dark:text-white"
+            className="border border-gray-3 p-3 rounded-md text-sm dark:bg-gray-800 dark:text-white"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
           </select>
         </div>
       </div>
 
+      {/* Table */}
       <Table>
         <TableHeader>
           <TableRow className="[&>th]:text-center">
-            <TableHead className="text-left">Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Phone</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Action</TableHead>
+            <TableHead className="text-left"><div className="flex justify-start items-center">Name</div></TableHead>
+            <TableHead className="text-left"><div className="flex justify-start items-center">Email</div></TableHead>
+            <TableHead className="text-left"><div className="flex justify-start items-center">Phone</div></TableHead>
+            <TableHead className="text-left"><div className="flex justify-start items-center">Status</div></TableHead>
+            <TableHead className="text-left"><div className="flex justify-start items-center">Action</div></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -86,27 +130,36 @@ export default function UserTable() {
                 </TableCell>
               </TableRow>
             ))
-          ) : filteredUsers.length > 0 ? (
-            filteredUsers.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="text-left">{user.name}</TableCell>
+          ) : paginatedData.length > 0 ? (
+            paginatedData.map((user : any) => (
+              <TableRow key={user._id}>
+                <TableCell className="text-left">{user.fullName}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone}</TableCell>
                 <TableCell>
-                  <span
-                    className={`text-sm font-medium ${
-                      user.status === "active"
-                        ? "text-green-600"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {user.status}
-                  </span>
+                 
+               <Switch
+  withIcon
+  checked={user.status === "ACTIVE"}
+  onChange={async (checked) => {
+    const newStatus = checked ? "ACTIVE" : "INACTIVE";
+
+    try {
+      await updateUserStatus(user._id); 
+      setRefresh((prev : any) => !prev)
+      // Call your API
+      toast.success(`User ${user.fullName} is now ${newStatus}`);
+      // Optionally update local user list if not using refetch
+    } catch (err) {
+      toast.error("Failed to update user status");
+    }
+  }}
+/>
+<span className="ml-2">{user.status}</span>
+                  
                 </TableCell>
                 <TableCell>
-                  <button>
-                    View
-                  </button>
+                  <button>View</button>
                 </TableCell>
               </TableRow>
             ))
@@ -119,6 +172,32 @@ export default function UserTable() {
           )}
         </TableBody>
       </Table>
+
+      {/* Pagination */}
+      {!loading && totalPages > 1 && (
+        <div className="flex justify-end items-center gap-4 mt-4">
+          <button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className="px-3 bg-primary text-white py-1 border rounded disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="text-sm">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 bg-primary text-white border rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
+
+      {/* Modal: Create User */}
+     <CreateUserModal setRefresh={setRefresh} open={open} onClose={() => setOpen(false)} />
     </div>
   );
 }

@@ -1,26 +1,44 @@
+"use client";
+
+import { Suspense, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { OverviewCardsGroup } from "./overview-cards";
+import { OverviewCardsSkeleton } from "./overview-cards/skeleton";
 import { PaymentsOverview } from "@/components/Charts/payments-overview";
-import { UsedDevices } from "@/components/Charts/used-devices";
 import { WeeksProfit } from "@/components/Charts/weeks-profit";
+import { UsedDevices } from "@/components/Charts/used-devices";
 import { TopChannels } from "@/components/Tables/top-channels";
 import { TopChannelsSkeleton } from "@/components/Tables/top-channels/skeleton";
+import { RegionLabels } from "./region-labels";
+import { ChatsCard } from "./chats-card";
 import { createTimeFrameExtractor } from "@/utils/timeframe-extractor";
-import { Suspense } from "react";
-import { ChatsCard } from "./_components/chats-card";
-import { OverviewCardsGroup } from "./_components/overview-cards";
-import { OverviewCardsSkeleton } from "./_components/overview-cards/skeleton";
-import { RegionLabels } from "./_components/region-labels";
-import { redirect } from "next/navigation";
 
-type PropsType = {
-  searchParams: Promise<{
-    selected_time_frame?: string;
-  }>;
+type Props = {
+  selected_time_frame?: string;
 };
 
-export default async function Home({ searchParams }: PropsType) {
-    redirect("/dashboard");
-  const { selected_time_frame } = await searchParams;
+export default function ClientHomeWrapper({ selected_time_frame }: Props) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
   const extractTimeFrame = createTimeFrameExtractor(selected_time_frame);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+      router.replace("/auth/sign-in");
+    } else {
+      setLoading(false);
+    }
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -36,9 +54,9 @@ export default async function Home({ searchParams }: PropsType) {
         />
 
         <WeeksProfit
+          className="col-span-12 xl:col-span-5"
           key={extractTimeFrame("weeks_profit")}
           timeFrame={extractTimeFrame("weeks_profit")?.split(":")[1]}
-          className="col-span-12 xl:col-span-5"
         />
 
         <UsedDevices

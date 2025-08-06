@@ -14,15 +14,15 @@ const Layout = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   const token = sessionStorage.getItem("token");
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
 
-  //   if (!token) {
-  //     router.replace("/auth/sign-in"); // Redirect if no token
-  //   } else {
-  //     setLoading(false); // Token found, show layout
-  //   }
-  // }, [router]);
+    if (!token) {
+      router.replace("/auth/sign-in"); // Redirect if no token
+    } else {
+      setLoading(false); // Token found, show layout
+    }
+  }, [router]);
 
   if (loading) {
     return (

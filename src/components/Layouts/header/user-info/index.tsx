@@ -11,15 +11,32 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { LogOutIcon, SettingsIcon, UserIcon } from "./icons";
+import { logoutUser } from "@/services/authService";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/userStore";
 
 export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
+    const user = useUserStore((state) => state.user);
+    console.log(user , 'suerdss')
+
+  const router = useRouter();
 
   const USER = {
     name: "John Smith",
-    email: "johnson@nextadmin.com",
+    email: "johnson@wisepay.com",
     img: "/images/user/user-03.png",
   };
+
+  const handleLogout = async() => {
+     const res = await logoutUser()
+     if(res.statusCode === 200){
+      sessionStorage.removeItem("token")
+      toast.success(res.message)
+      router.push("/auth/sign-in")
+     }
+  }
 
   return (
     <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -29,7 +46,7 @@ export function UserInfo() {
      <figure className="flex items-center gap-3">
   {/* Initials instead of image */}
   <div className="size-12 flex items-center justify-center rounded-full bg-primary text-white font-medium text-lg">
-    {USER.name
+    {user?.name
       .split(' ')
       .map(word => word[0])
       .join('')
@@ -37,7 +54,7 @@ export function UserInfo() {
   </div>
 
   <figcaption className="flex items-center gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
-    <span>{USER.name}</span>
+    <span className="capitalize">{user?.name}</span>
 
     <ChevronUpIcon
       aria-hidden
@@ -62,15 +79,17 @@ export function UserInfo() {
      <figure className="flex items-center p-2 gap-3">
   {/* Initials instead of image */}
   <div className="size-12 flex items-center justify-center rounded-full bg-primary text-white font-medium text-lg">
-    {USER.name
+    {user?.name
       .split(' ')
       .map(word => word[0])
       .join('')
       .toUpperCase()}
   </div>
 
-  <figcaption className="flex items-center gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
-    <span>{USER.name}</span>
+  <figcaption className="flex flex-col items-start gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
+    <span className="capitalize">{user?.name}</span>
+     <span className="text-sm">{user?.email}</span>
+     
 
     {/* <ChevronUpIcon
       aria-hidden
@@ -82,6 +101,7 @@ export function UserInfo() {
     /> */}
   </figcaption>
 </figure>
+
 
         <hr className="border-[#E8E8E8] dark:border-dark-3" />
 
@@ -114,7 +134,7 @@ export function UserInfo() {
         <div className="p-2 text-base text-[#4B5563] dark:text-dark-6">
           <button
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
-            onClick={() => setIsOpen(false)}
+            onClick={handleLogout}
           >
             <LogOutIcon />
 

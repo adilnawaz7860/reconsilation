@@ -4,7 +4,7 @@ import {Toaster} from 'sonner'
 const Layout = ({children}) => {
   return (
     <div>{children}
-    <Toaster/>
+    <Toaster richColors/>
     </div>
   )
 }

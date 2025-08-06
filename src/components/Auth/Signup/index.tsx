@@ -5,15 +5,16 @@ import React from "react";
 import InputGroup from "../../FormElements/InputGroup";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Logo } from "@/components/logo";
 import Image from "next/image";
 import logo from "@/assets/logos/main.svg";
 
-// Validation schema
+// Validation schema (updated)
 const SignupSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-  
+  phone: Yup.string()
+    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+    .required("Phone number is required"),
   password: Yup.string()
     .min(6, "Minimum 6 characters")
     .required("Password is required"),
@@ -24,34 +25,32 @@ const SignupSchema = Yup.object().shape({
 
 export default function SignUpWithPassword() {
   return (
-    <div>
+    <div className="max-h-[500px] overflow-auto">
       {/* Top Header */}
-        <div className="mb-6 flex items-center justify-between">
-                <div className="relative  h-12 w-[200px]">
-                   <Image
-        src={logo}
-        fill
-        className="dark:hidden"
-        alt="NextAdmin logo"
-        role="presentation"
-        quality={100}
-      />
-              </div>
-        
-
-          </div>
+      <div className="mb-6 flex items-center justify-between">
+        <div className="relative h-12 w-[200px]">
+          <Image
+            src={logo}
+            fill
+            className="dark:hidden"
+            alt="wisepay logo"
+            role="presentation"
+            quality={100}
+          />
+        </div>
+      </div>
 
       <Formik
         initialValues={{
           name: "",
           email: "",
+          phone: "",
           password: "",
           confirmPassword: "",
         }}
         validationSchema={SignupSchema}
         onSubmit={(values, { setSubmitting }) => {
           setSubmitting(true);
-          // Submit logic here
           console.log("Form values:", values);
           setTimeout(() => setSubmitting(false), 1000);
         }}
@@ -84,10 +83,26 @@ export default function SignUpWithPassword() {
                 name="email"
                 handleChange={handleChange}
                 value={values.email}
-                // icon={<EmailIcon />}
               />
               <ErrorMessage
                 name="email"
+                component="div"
+                className="text-sm text-red-500 mt-1"
+              />
+            </div>
+
+            {/* Phone */}
+            <div className="mb-4">
+              <InputGroup
+                type="text"
+                label="Phone"
+                placeholder="Enter your phone number"
+                name="phone"
+                handleChange={handleChange}
+                value={values.phone}
+              />
+              <ErrorMessage
+                name="phone"
                 component="div"
                 className="text-sm text-red-500 mt-1"
               />

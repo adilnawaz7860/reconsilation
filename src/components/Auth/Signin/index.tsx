@@ -7,6 +7,9 @@ import * as Yup from "yup";
 import logo from "@/assets/logos/main.svg";
 import Image from "next/image";
 import {toast} from 'sonner';
+import {loginUser} from '@/services/authService'
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/userStore";
 
 // Validation schema
 const SigninSchema = Yup.object().shape({
@@ -16,6 +19,7 @@ const SigninSchema = Yup.object().shape({
 });
 
 export default function SigninWithPassword() {
+  const router = useRouter();
   return (
     <div>
       {/* Top Header */}
@@ -25,7 +29,7 @@ export default function SigninWithPassword() {
         src={logo}
         fill
         className="dark:hidden"
-        alt="NextAdmin logo"
+        alt="wisepay logo"
         role="presentation"
         quality={100}
       />
@@ -43,24 +47,17 @@ export default function SigninWithPassword() {
       onSubmit={async (values, { setSubmitting }) => {
   setSubmitting(true);
   try {
-    const res = await fetch("/api/auth/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data?.message || "Login failed");
-    }
+     const res = await loginUser(values)
+      const { accessToken, refreshToken,name, user,email, role } = res.data;
+     
+        useUserStore.getState().setUser({ name : user.fullName, email : user.email, role });
+     
 
     // Save token to sessionStorage
-    sessionStorage.setItem("token", data.token);
+    sessionStorage.setItem("token", accessToken);
 
     toast.success("Signed in successfully!");
+    router.push('/dashboard')
 
     // You can redirect here if needed
     // router.push("/dashboard");
