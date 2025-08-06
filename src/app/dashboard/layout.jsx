@@ -11,7 +11,7 @@ import {Toaster} from 'sonner'
 import "jsvectormap/dist/jsvectormap.css";
 
 const Layout = ({ children }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
