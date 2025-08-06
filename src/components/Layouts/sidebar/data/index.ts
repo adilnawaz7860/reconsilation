@@ -46,6 +46,12 @@ export function useNavData() {
           icon: Icons.Alphabet,
           items: [],
         },
+         {
+          title: "Imports",
+          url: "/dashboard/import",
+          icon: Icons.Alphabet,
+          items: [],
+        },
         {
           title: "Profile",
           url: "/dashboard/profile",

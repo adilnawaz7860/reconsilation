@@ -15,7 +15,7 @@ type Props = {
  
 };
 
-export default function UpdateUserModal({ setRefresh,open,data, onClose }: Props) {
+export default function UpdateImportModal({ setRefresh,open,data, onClose }: Props) {
        console.log(data , "datatad")
     
   const [form, setForm] = useState({
@@ -85,54 +85,30 @@ export default function UpdateUserModal({ setRefresh,open,data, onClose }: Props
         </h2>
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-           <div className="space-y-2">
-             <label
-        
-        className="text-body-sm font-medium text-dark dark:text-white"
-      >
-        Name
-       
-      </label><input
+          <input
             type="text"
             name="fullName"
             placeholder="Full Name"
-            className="w-full rounded border border-gray-300 bg-white p-3 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
+            className="w-full rounded border border-gray-300 bg-white p-2 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
             value={form.fullName}
             onChange={handleChange}
-          /> </div>
-           <div className="space-y-2">
-             <label
-        
-        className="text-body-sm font-medium text-dark dark:text-white"
-      >
-        Email
-       
-      </label>
+          />
           <input
             type="email"
             name="email"
             placeholder="Email"
-            className="w-full rounded border border-gray-300 bg-white p-3 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
+            className="w-full rounded border border-gray-300 bg-white p-2 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
             value={form.email}
             onChange={handleChange}
           />
-          </div>
-           <div className="space-y-2">
-             <label
-        
-        className="text-body-sm font-medium text-dark dark:text-white"
-      >
-        Phone
-       
-      </label>
            <input
             type="tel"
             name="phone"
             placeholder="Email"
-            className="w-full rounded border border-gray-300 bg-white p-3 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
+            className="w-full rounded border border-gray-300 bg-white p-2 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
             value={form.phone}
             onChange={handleChange}
-          /> </div>
+          />
 
           <div className="mt-6 flex justify-end gap-4">
             <button

@@ -11,10 +11,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getallTransactions } from "@/services/transactionService";
+import CreateTransactionModal from "./CreateTransactionModal";
+
 
 export default function LatestTransactionsTable() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [trxData ,setTrxData] = useState({});
+  const [open ,setOpen] = useState(false);
   const rowsPerPage = 10;
 
   const fetchTransactions = async () => {
@@ -34,6 +38,11 @@ export default function LatestTransactionsTable() {
   useEffect(() => {
     fetchTransactions();
   }, []);
+
+  const handleTransaction = (data: any) => {
+    setTrxData(data);
+    setOpen(true)
+  }
 
 
 const formatDate = (dateStr?: string) => {
@@ -70,6 +79,7 @@ const formatDate = (dateStr?: string) => {
                <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-center">Created At</TableHead>
                 <TableHead className="text-center">Updated At</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
 
 
           </TableRow>
@@ -92,7 +102,7 @@ const formatDate = (dateStr?: string) => {
                     <TableCell>{tx.type}</TableCell>
                        <TableCell>{tx.merchantid?.email}</TableCell>
                          <TableCell>{tx.utr}</TableCell>
-                <TableCell>${tx.amount.toFixed(2)}</TableCell>
+                <TableCell>₹{tx.amount.toFixed(2)}</TableCell>
                 <TableCell className="text-center">
                   <span
                     className={`text-sm font-medium capitalize ${
@@ -109,7 +119,17 @@ const formatDate = (dateStr?: string) => {
 
                 <TableCell className="text-center">{formatDate(tx.createdAt)}</TableCell>
                 <TableCell className="text-center">{formatDate(tx.updatedAt)}</TableCell>
-
+                  <TableCell className="text-center">
+                    <div className="flex gap-2 justify-center">
+                     <button
+            onClick={() => handleTransaction(tx)}
+            className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
+          >
+            View
+          </button>
+                      {/* Add more actions like Edit/Delete here if needed */}
+                    </div>
+                  </TableCell>
               </TableRow>
             ))
           ) : (
@@ -121,7 +141,7 @@ const formatDate = (dateStr?: string) => {
           )}
         </TableBody>
       </Table>
-
+    <CreateTransactionModal transaction={trxData}  open={open} onClose={() => setOpen(false)} />
    
     </div>
   );

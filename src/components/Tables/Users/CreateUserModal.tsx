@@ -73,12 +73,19 @@ export default function CreateUserModal({ open, onClose ,setRefresh}: Props) {
         </h2>
 
         <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
-          <div>
+          <div className="space-y-2">
+             <label
+        
+        className="text-body-sm font-medium text-dark dark:text-white"
+      >
+        Name
+         <span className="ml-1 select-none text-red">*</span>
+      </label>
             <input
               type="text"
               name="fullName"
               placeholder="Full Name"
-              className="w-full rounded border border-gray-300 bg-white p-2 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
+              className="w-full rounded border border-gray-300 bg-white p-3 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
               value={formik.values.fullName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -88,12 +95,19 @@ export default function CreateUserModal({ open, onClose ,setRefresh}: Props) {
             )}
           </div>
 
-          <div>
+          <div className="space-y-2">
+             <label
+        
+        className="text-body-sm font-medium text-dark dark:text-white"
+      >
+        Email
+         <span className="ml-1 select-none text-red">*</span>
+      </label>
             <input
               type="email"
               name="email"
               placeholder="Email"
-              className="w-full rounded border border-gray-300 bg-white p-2 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
+              className="w-full rounded border border-gray-300 bg-white p-3 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -103,12 +117,19 @@ export default function CreateUserModal({ open, onClose ,setRefresh}: Props) {
             )}
           </div>
 
-          <div>
+          <div className="space-y-2">
+             <label
+        
+        className="text-body-sm font-medium text-dark dark:text-white"
+      >
+        Phone
+         <span className="ml-1 select-none text-red">*</span>
+      </label>
             <input
               type="tel"
               name="phone"
               placeholder="Phone"
-              className="w-full rounded border border-gray-300 bg-white p-2 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
+              className="w-full rounded border border-gray-300 bg-white p-3 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
               value={formik.values.phone}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -118,12 +139,19 @@ export default function CreateUserModal({ open, onClose ,setRefresh}: Props) {
             )}
           </div>
 
-          <div>
+          <div className="space-y-2">
+             <label
+        
+        className="text-body-sm font-medium text-dark dark:text-white"
+      >
+        Password
+         <span className="ml-1 select-none text-red">*</span>
+      </label>
             <input
               type="password"
               name="password"
               placeholder="Password"
-              className="w-full rounded border border-gray-300 bg-white p-2 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
+              className="w-full rounded border border-gray-300 bg-white p-3 text-sm text-black dark:bg-gray-800 dark:text-white dark:border-gray-700"
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}

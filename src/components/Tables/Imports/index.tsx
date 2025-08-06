@@ -11,16 +11,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import CreateUserModal from "./CreateUserModal";
+import CreateUserModal from "./CreateImportModal";
 import { getallUsers, updateUserStatus } from "@/services/authService";
 import { Switch } from "@/components/FormElements/switch";
 import { toast } from "sonner";
-import UpdateUserModal from "./UpdateUserModal";
+import UpdateUserModal from "./UpdateImportModal";
+import CreateImportModal from "./CreateImportModal";
 
 // Dummy user data
 
 
-export default function UserTable() {
+export default function ImportTable() {
    const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
   const [users ,setUsers] = useState([]);
@@ -32,11 +33,8 @@ export default function UserTable() {
     const [statusFilter, setStatusFilter] = useState("all");
     const [loading ,setLoading] = useState(false);
     const rowsPerPage = 4;
-    
-
-    
   
- 
+  
   
       const formatDate = (dateStr : any) =>
     new Intl.DateTimeFormat("en-IN", {
@@ -51,11 +49,10 @@ export default function UserTable() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await getallUsers(currentPage, rowsPerPage, search, statusFilter); 
+        const res = await getallUsers(); 
         console.log(res, "res")// assumes it returns an array
         if (res.statusCode === 200) {
-          setUsers(res?.data?.users);
-           setTotalPages(res?.data?.totalPages || 1);
+          // setUsers(res?.data?.users);
         }
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -108,7 +105,7 @@ export default function UserTable() {
             onClick={() => setOpen(true)}
             className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
           >
-            Create User
+            Import File
           </button>
         </div>
       </div>
@@ -121,7 +118,6 @@ export default function UserTable() {
             <TableHead className="text-left"><div className="flex justify-start items-center">Email</div></TableHead>
             <TableHead className="text-left"><div className="flex justify-start items-center">Phone</div></TableHead>
             <TableHead className="text-left"><div className="flex justify-start items-center">Status</div></TableHead>
-             <TableHead className="text-left"><div className="flex justify-start items-center">Created At</div></TableHead>
             <TableHead className="text-left"><div className="flex justify-start items-center">Action</div></TableHead>
           </TableRow>
         </TableHeader>
@@ -162,7 +158,6 @@ export default function UserTable() {
 <span className="ml-2">{user.status}</span>
                   
                 </TableCell>
-                 <TableCell>{formatDate(user.createdAt)}</TableCell>
                 <TableCell>
                     <button
             onClick={() => handleEdit(user)}
@@ -176,7 +171,7 @@ export default function UserTable() {
           ) : (
             <TableRow>
               <TableCell colSpan={5} className="text-center py-4 text-muted">
-                No users found.
+                No files found.
               </TableCell>
             </TableRow>
           )}
@@ -207,8 +202,8 @@ export default function UserTable() {
       )}
 
       {/* Modal: Create User */}
-     <CreateUserModal setRefresh={setRefresh} open={open} onClose={() => setOpen(false)} />
-           <UpdateUserModal data={editableData} setRefresh={setRefresh} open={open2} onClose={() => setOpen2(false)} />
+     <CreateImportModal setRefresh={setRefresh} open={open} onClose={() => setOpen(false)} />
+           {/* <UpdateUserModal data={editableData} setRefresh={setRefresh} open={open2} onClose={() => setOpen2(false)} /> */}
 
     </div>
   );
