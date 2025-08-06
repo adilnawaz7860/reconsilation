@@ -75,7 +75,7 @@ export function Sidebar() {
               onClick={() => isMobile && toggleSidebar()}
               className="px-0 py-2.5 flex gap-2 items-center text-2xl font-bold text-primary min-[850px]:py-0"
             >
-             <Code2/> Wisi-pay
+             <Code2/> Wisi-Pay
             </Link>
 
             {isMobile && (

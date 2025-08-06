@@ -27,7 +27,7 @@ export default function SigninWithPassword() {
       <div className="mb-6 flex items-center justify-between">
              <div className="px-0 py-2.5 flex gap-2 items-center   text-3xl font-bold text-primary min-[850px]:py-0"
             >
-             <Code2 className="text-xl"/> Wisi-pay </div>
+             <Code2 className="text-xl"/> Wisi-Pay </div>
 
       </div>
 
