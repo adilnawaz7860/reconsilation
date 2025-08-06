@@ -43,9 +43,11 @@ export default function CreateUserModal({ open, onClose ,setRefresh}: Props) {
       onClose();
       setRefresh((prev : any) => !prev)         // ✅ close modal
     } else {
+      onClose();
       toast.error(res.message || "Something went wrong.");
     }
   } catch (error : any) {
+      onClose();
     toast.error(error?.response?.data?.message || "Registration failed.");
   }finally{
     setLoading(false);
@@ -65,7 +67,7 @@ export default function CreateUserModal({ open, onClose ,setRefresh}: Props) {
         },
       }}
     >
-      <div className="absolute top-1/2 left-1/2 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white dark:bg-gray-900 p-6 shadow-lg">
+      <div className=" z-[9999] absolute top-1/2 left-1/2 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white dark:bg-gray-900 p-6 shadow-lg">
         <h2 className="text-xl font-semibold mb-4 text-dark dark:text-white">
           Create User
         </h2>
@@ -139,12 +141,15 @@ export default function CreateUserModal({ open, onClose ,setRefresh}: Props) {
             >
               Cancel
             </button>
-            <button
+             <button
               type="submit"
-              className="px-4 py-2 bg-primary text-white rounded hover:bg-opacity-90"
+              className="px-4 py-2 bg-primary text-white rounded hover:bg-opacity-90 flex items-center justify-center min-w-[80px]"
             >
-            
-            {loading ?  (<span className="inline-block h-4 w-4 px-2 animate-spin rounded-full border-2 border-solid border-white border-t-transparent dark:border-primary dark:border-t-transparent" />) : 'Save'}
+              {loading ? (
+                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-t-transparent dark:border-primary dark:border-t-transparent" />
+              ) : (
+                "Save"
+              )}
             </button>
           </div>
         </form>

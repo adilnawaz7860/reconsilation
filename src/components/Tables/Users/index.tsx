@@ -15,6 +15,7 @@ import CreateUserModal from "./CreateUserModal";
 import { getallUsers, updateUserStatus } from "@/services/authService";
 import { Switch } from "@/components/FormElements/switch";
 import { toast } from "sonner";
+import UpdateUserModal from "./UpdateUserModal";
 
 // Dummy user data
 
@@ -25,8 +26,10 @@ export default function UserTable() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [open, setOpen] = useState(false);
+    const [open2, setOpen2] = useState(false);
   const [users ,setUsers] = useState([]);
   const [refresh ,setRefresh] = useState(false);
+  const [editableData, setEditableData] = useState({});
 
   const rowsPerPage = 10;
 
@@ -48,6 +51,12 @@ export default function UserTable() {
 
     fetchUsers();
   }, [refresh]);
+
+  const handleEdit = (data : any) => {
+     setEditableData(data)
+     setOpen2(true);
+    
+  }
 
   const filteredUsers = users.filter((user : any) => {
     const matchesSearch =
@@ -78,17 +87,9 @@ export default function UserTable() {
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
-        <div className="flex items-center justify-between w-full md:w-auto">
-          <h2 className="text-xl font-bold text-dark dark:text-white">
-            User List
-          </h2>
-       
-        </div>
-
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-           
-          <input
-            className="border border-gray-3 p-3"
+        <div className="flex items-center gap-4 justify-between w-full md:w-auto">
+         <input
+            className="border rounded-md border-gray-3 p-3"
             placeholder="Search by name, email"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -102,6 +103,12 @@ export default function UserTable() {
             <option value="ACTIVE">Active</option>
             <option value="INACTIVE">Inactive</option>
           </select>
+       
+        </div>
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+           
+        
             <button
             onClick={() => setOpen(true)}
             className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
@@ -160,7 +167,12 @@ export default function UserTable() {
                   
                 </TableCell>
                 <TableCell>
-                  <button>View</button>
+                    <button
+            onClick={() => handleEdit(user)}
+            className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
+          >
+            Update User
+          </button>
                 </TableCell>
               </TableRow>
             ))
@@ -199,6 +211,8 @@ export default function UserTable() {
 
       {/* Modal: Create User */}
      <CreateUserModal setRefresh={setRefresh} open={open} onClose={() => setOpen(false)} />
+           <UpdateUserModal data={editableData} setRefresh={setRefresh} open={open2} onClose={() => setOpen2(false)} />
+
     </div>
   );
 }

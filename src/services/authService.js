@@ -12,9 +12,17 @@ export const loginUser = async (credentials) => {
   return res.data;
 };
 
-// Login
-export const updateUserStatus = async (id) => {
+// Update User Status
+export const updateUserStatus = async (id ,) => {
   const res = await axios.post(`${API}/update-status/${id}`, {}, {
+    withCredentials: true,
+  });
+  return res.data;
+};
+
+// Update User
+export const updateUserById = async (id ,data) => {
+  const res = await axios.patch(`${API}/update-user/${id}`, data, {
     withCredentials: true,
   });
   return res.data;

@@ -44,7 +44,7 @@ const Layout = ({ children }) => {
           </main>
         </div>
       </div>
-          <Toaster richColors/>
+<div className="z-[2000]"><Toaster richColors position="top-right"  /></div>
     </Providers>
   );
 };
