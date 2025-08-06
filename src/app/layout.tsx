@@ -14,8 +14,8 @@ import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | wisepay - Next.js Dashboard Kit",
-    default: "wisepay - Next.js Dashboard Kit",
+    template: "%s | wisipay - Next.js Dashboard Kit",
+    default: "wisipay - Next.js Dashboard Kit",
   },
   description:
     "Next.js admin dashboard toolkit with 200+ templates, UI components, and integrations for fast dashboard development.",
