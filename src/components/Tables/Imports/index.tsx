@@ -39,7 +39,7 @@ export default function ImportTable() {
     getUser();
   }, []);
 
-   const formatDate = (dateStr?: any) => {
+  const formatDate = (dateStr?: any) => {
     if (!dateStr) return "Invalid Date";
 
     const date = new Date(dateStr);
@@ -54,14 +54,14 @@ export default function ImportTable() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await getallExcels(currentPage , rowsPerPage);
+        const res = await getallExcels(currentPage, rowsPerPage);
         console.log(res, "res"); // assumes it returns an array
         if (res.statusCode === 200) {
           setExcels(res?.data?.excels);
           const total = res.data.length;
-          console.log(total , "totally") // assuming data includes ALL records
-        const totalPages = Math.ceil(res?.data?.totalCount / rowsPerPage);
-        setTotalPages(res?.data?.totalPages);
+          console.log(total, "totally"); // assuming data includes ALL records
+          const totalPages = Math.ceil(res?.data?.totalCount / rowsPerPage);
+          setTotalPages(res?.data?.totalPages);
         }
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -71,15 +71,14 @@ export default function ImportTable() {
     };
 
     fetchUsers();
-  }, [refresh ,currentPage]);
-
+  }, [refresh, currentPage]);
 
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
   return (
-    <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
+    <div className="max-w-6xl w-full overflow-x-auto rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex w-full items-center justify-between gap-4 md:w-auto">
@@ -114,7 +113,7 @@ export default function ImportTable() {
 
       {/* Table */}
       <Table>
-        <TableHeader>
+        <TableHeader className="whitespace-nowrap">
           <TableRow className="[&>th]:text-center">
             <TableHead className="text-left">
               <div className="flex items-center justify-start">
@@ -131,7 +130,7 @@ export default function ImportTable() {
               <div className="flex items-center justify-start">merchantMdr</div>
             </TableHead>
             <TableHead className="text-left">
-              <div className="flex items-center whitespace-nowrap justify-start">
+              <div className="flex items-center justify-start whitespace-nowrap">
                 Settle Amount
               </div>
             </TableHead>
@@ -151,7 +150,7 @@ export default function ImportTable() {
             </TableHead>
 
             <TableHead className="text-left">
-              <div className="flex items-center whitespace-nowrap justify-start">
+              <div className="flex items-center justify-start whitespace-nowrap">
                 Customer Name
               </div>
             </TableHead>
@@ -200,10 +199,14 @@ export default function ImportTable() {
                 <TableCell>{user.merchantMdr}</TableCell>
                 <TableCell>{user.netSettlementAmt}</TableCell>
                 <TableCell>{user.payerMobile}</TableCell>
-                <TableCell className="whitespace-nowrap">{user.payerName}</TableCell>
+                <TableCell className="whitespace-nowrap">
+                  {user.payerName}
+                </TableCell>
                 <TableCell>{user.payerVpa}</TableCell>
                 <TableCell>{user.utr}</TableCell>
-                <TableCell className="whitespace-nowrap">{user.customerName}</TableCell>
+                <TableCell className="whitespace-nowrap">
+                  {user.customerName}
+                </TableCell>
                 <TableCell>{user.customerVpa}</TableCell>
                 <TableCell>
                   <span
@@ -221,9 +224,15 @@ export default function ImportTable() {
                   </span>
                 </TableCell>
 
-                <TableCell className="whitespace-nowrap">{formatDate(user.trxTime)}</TableCell>
-                <TableCell className="whitespace-nowrap">{formatDate(user.createdAt)}</TableCell>
-                <TableCell className="whitespace-nowrap">{formatDate(user.updatedAt)}</TableCell>
+                <TableCell className="whitespace-nowrap">
+                  {formatDate(user.trxTime)}
+                </TableCell>
+                <TableCell className="whitespace-nowrap">
+                  {formatDate(user.createdAt)}
+                </TableCell>
+                <TableCell className="whitespace-nowrap">
+                  {formatDate(user.updatedAt)}
+                </TableCell>
 
                 <TableCell>
                   {/* <button
@@ -274,7 +283,6 @@ export default function ImportTable() {
         open={open}
         onClose={() => setOpen(false)}
       />
-     
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { InvoiceTable } from "@/components/Tables/invoice-table";
-import  UserTable  from "@/components/Tables/Users";
+import UserTable from "@/components/Tables/Users";
 import { TopChannelsSkeleton } from "@/components/Tables/top-channels/skeleton";
 import { TopProducts } from "@/components/Tables/top-products";
 import { TopProductsSkeleton } from "@/components/Tables/top-products/skeleton";
@@ -18,8 +18,8 @@ const TablesPage = () => {
     <>
       <Breadcrumb pageName="Transactions" />
 
-      <div className="space-y-10 w-full xl:w-[1100px] xl:max-w-[1100px] overflow-auto">
-       <LatestTransactionsTable/>
+      <div className="w-full space-y-10 overflow-auto xl:w-[1000px] xl:max-w-[1000px]">
+        <LatestTransactionsTable />
       </div>
     </>
   );

@@ -12,8 +12,8 @@ const TablesPage = () => {
     <>
       <Breadcrumb pageName="Import" />
 
-      <div className="space-y-10 w-full xl:w-[1100px] xl:max-w-[1100px] overflow-auto">
-       <ImportTable/>
+      <div className="w-full space-y-10 overflow-auto xl:w-[1000px] xl:max-w-[1000px]">
+        <ImportTable />
       </div>
     </>
   );
