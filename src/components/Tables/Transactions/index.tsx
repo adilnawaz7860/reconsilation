@@ -52,7 +52,7 @@ export default function LatestTransactionsTable() {
     setOpen(true);
   };
 
-  const formatDate = (dateStr?: string) => {
+  const formatDate = (dateStr?: any) => {
     if (!dateStr) return "Invalid Date";
 
     const date = new Date(dateStr);

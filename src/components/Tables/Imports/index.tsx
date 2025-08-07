@@ -39,11 +39,17 @@ export default function ImportTable() {
     getUser();
   }, []);
 
-  const formatDate = (dateStr: any) =>
-    new Intl.DateTimeFormat("en-IN", {
+   const formatDate = (dateStr?: any) => {
+    if (!dateStr) return "Invalid Date";
+
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return "Invalid Date";
+
+    return new Intl.DateTimeFormat("en-IN", {
       dateStyle: "medium",
       timeStyle: "short",
-    }).format(new Date(dateStr));
+    }).format(date);
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -215,9 +221,9 @@ export default function ImportTable() {
                   </span>
                 </TableCell>
 
-                <TableCell className="whitespace-nowrap">{user.trxTime}</TableCell>
-                <TableCell className="whitespace-nowrap">{user.createdAt}</TableCell>
-                <TableCell className="whitespace-nowrap">{user.updatedAt}</TableCell>
+                <TableCell className="whitespace-nowrap">{formatDate(user.trxTime)}</TableCell>
+                <TableCell className="whitespace-nowrap">{formatDate(user.createdAt)}</TableCell>
+                <TableCell className="whitespace-nowrap">{formatDate(user.updatedAt)}</TableCell>
 
                 <TableCell>
                   {/* <button
