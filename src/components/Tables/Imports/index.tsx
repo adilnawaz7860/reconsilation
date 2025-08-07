@@ -11,11 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import CreateUserModal from "./CreateImportModal";
-import { getallUsers, updateUserStatus } from "@/services/authService";
-import { Switch } from "@/components/FormElements/switch";
-import { toast } from "sonner";
-import UpdateUserModal from "./UpdateImportModal";
 import CreateImportModal from "./CreateImportModal";
 import { getallExcels } from "@/services/fileService";
 import { getCurrentUser } from "@/services/authService";
@@ -56,11 +51,11 @@ export default function ImportTable() {
         const res = await getallExcels(currentPage , rowsPerPage);
         console.log(res, "res"); // assumes it returns an array
         if (res.statusCode === 200) {
-          setExcels(res?.data);
+          setExcels(res?.data?.excels);
           const total = res.data.length;
           console.log(total , "totally") // assuming data includes ALL records
-        const totalPages = Math.ceil(total / rowsPerPage);
-        setTotalPages(totalPages);
+        const totalPages = Math.ceil(res?.data?.totalCount / rowsPerPage);
+        setTotalPages(res?.data?.totalPages);
         }
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -70,7 +65,7 @@ export default function ImportTable() {
     };
 
     fetchUsers();
-  }, [refresh]);
+  }, [refresh ,currentPage]);
 
 
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
