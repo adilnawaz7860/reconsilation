@@ -18,40 +18,43 @@ import { toast } from "sonner";
 import UpdateUserModal from "./UpdateImportModal";
 import CreateImportModal from "./CreateImportModal";
 import { getallExcels } from "@/services/fileService";
-
+import { getCurrentUser } from "@/services/authService";
 // Dummy user data
 
-
 export default function ImportTable() {
-   const [open, setOpen] = useState(false);
-    const [open2, setOpen2] = useState(false);
-  const [excels ,setExcels] = useState([]);
-  const [refresh ,setRefresh] = useState(false);
+  const [role, setRole] = useState("");
+  const [open, setOpen] = useState(false);
+  const [open2, setOpen2] = useState(false);
+  const [excels, setExcels] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   const [editableData, setEditableData] = useState({});
-   const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [search, setSearch] = useState("");
-    const [statusFilter, setStatusFilter] = useState("all");
-    const [loading ,setLoading] = useState(false);
-    const rowsPerPage = 4;
-  
-  
-  
-      const formatDate = (dateStr : any) =>
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [loading, setLoading] = useState(false);
+  const rowsPerPage = 4;
+
+  const getUser = async () => {
+    const res = await getCurrentUser();
+    setRole(res?.data?.role);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const formatDate = (dateStr: any) =>
     new Intl.DateTimeFormat("en-IN", {
       dateStyle: "medium",
       timeStyle: "short",
     }).format(new Date(dateStr));
-  
-   
-
-
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await getallExcels(); 
-        console.log(res, "res")// assumes it returns an array
+        const res = await getallExcels();
+        console.log(res, "res"); // assumes it returns an array
         if (res.statusCode === 200) {
           setExcels(res?.data);
         }
@@ -65,23 +68,21 @@ export default function ImportTable() {
     fetchUsers();
   }, [refresh]);
 
-  const handleEdit = (data : any) => {
-     setEditableData(data)
-     setOpen2(true);
-    
-  }
+  const handleEdit = (data: any) => {
+    setEditableData(data);
+    setOpen2(true);
+  };
 
-   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-
-
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNext = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
   return (
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
-        <div className="flex items-center gap-4 justify-between w-full md:w-auto">
-         {/* <input
+      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex w-full items-center justify-between gap-4 md:w-auto">
+          {/* <input
             className="border rounded-md border-gray-3 p-3"
             placeholder="Search by name, email"
             value={search}
@@ -96,18 +97,17 @@ export default function ImportTable() {
             <option value="ACTIVE">Active</option>
             <option value="INACTIVE">Inactive</option>
           </select> */}
-       
         </div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-           
-        
+          {role !== "ADMIN" && (
             <button
-            onClick={() => setOpen(true)}
-            className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
-          >
-            Import File
-          </button>
+              onClick={() => setOpen(true)}
+              className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
+            >
+              Import File
+            </button>
+          )}
         </div>
       </div>
 
@@ -115,26 +115,68 @@ export default function ImportTable() {
       <Table>
         <TableHeader>
           <TableRow className="[&>th]:text-center">
-            <TableHead className="text-left"><div className="flex justify-start items-center">TransactionId</div></TableHead>
-             <TableHead className="text-left"><div className="flex justify-start items-center">Amount</div></TableHead> 
-              <TableHead className="text-left"><div className="flex justify-start items-center">merchantId</div></TableHead>
-               <TableHead className="text-left"><div className="flex justify-start items-center">merchantMdr</div></TableHead>
-                <TableHead className="text-left"><div className="flex justify-start items-center">Settle Amount</div></TableHead>
-                 <TableHead className="text-left"><div className="flex justify-start items-center">Payer Mobile</div></TableHead>
-                  <TableHead className="text-left"><div className="flex justify-start items-center">Payer Name</div></TableHead>
-                   <TableHead className="text-left"><div className="flex justify-start items-center">Payer VPA</div></TableHead>
-                     <TableHead className="text-left"><div className="flex justify-start items-center">UTR</div></TableHead>
-                           
-            <TableHead className="text-left"><div className="flex justify-start items-center">Customer Name</div></TableHead>
-            <TableHead className="text-left"><div className="flex justify-start items-center">Customer VPA</div></TableHead>
-                    <TableHead className="text-left"><div className="flex justify-start items-center">Status</div></TableHead>
-                     <TableHead className="text-left"><div className="flex justify-start items-center">Transaction Time</div></TableHead>
-                         <TableHead className="text-left"><div className="flex justify-start items-center">Created At</div></TableHead>
-                  <TableHead className="text-left"><div className="flex justify-start items-center">Updated At</div></TableHead>
-    
-           
-           
-            <TableHead className="text-left"><div className="flex justify-start items-center">Action</div></TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">
+                TransactionId
+              </div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Amount</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">merchantId</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">merchantMdr</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">
+                Settle Amount
+              </div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">
+                Payer Mobile
+              </div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Payer Name</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Payer VPA</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">UTR</div>
+            </TableHead>
+
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">
+                Customer Name
+              </div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">
+                Customer VPA
+              </div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Status</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">
+                Transaction Time
+              </div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Created At</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Updated At</div>
+            </TableHead>
+
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Action</div>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -147,56 +189,54 @@ export default function ImportTable() {
               </TableRow>
             ))
           ) : excels.length > 0 ? (
-            excels.map((user : any) => (
+            excels.map((user: any) => (
               <TableRow key={user._id}>
-                <TableCell className="text-left">{user.transactionid}</TableCell>
+                <TableCell className="text-left">
+                  {user.transactionid}
+                </TableCell>
                 <TableCell>{user.amount}</TableCell>
                 <TableCell>{user.merchantId}</TableCell>
-                  <TableCell>{user.merchantMdr}</TableCell>
-                   <TableCell>{user.netSettlementAmt}</TableCell>
-                    <TableCell>{user.payerMobile}</TableCell>
-                    <TableCell>{user.payerName}</TableCell>
-                    <TableCell>{user.payerVpa}</TableCell>
-                     <TableCell>{user.utr}</TableCell>
-                     <TableCell>{user.customerName}</TableCell>
-                    <TableCell>{user.customerVpa}</TableCell>
-                  <TableCell>
-  <span
-    style={{
-      color:
-        user.status === "SUCCESS"
-          ? "green"
-          : user.status === "FAILED"
-          ? "red"
-          : "goldenrod",
-      fontWeight: "500",
-    }}
-  >
-    {user.status}
-  </span>
-</TableCell>
-
-                     <TableCell>{user.trxTime}</TableCell> 
-                      <TableCell>{user.createdAt}</TableCell>
-                       <TableCell>{user.updatedAt}</TableCell>
-
-
-
-
-               
+                <TableCell>{user.merchantMdr}</TableCell>
+                <TableCell>{user.netSettlementAmt}</TableCell>
+                <TableCell>{user.payerMobile}</TableCell>
+                <TableCell>{user.payerName}</TableCell>
+                <TableCell>{user.payerVpa}</TableCell>
+                <TableCell>{user.utr}</TableCell>
+                <TableCell>{user.customerName}</TableCell>
+                <TableCell>{user.customerVpa}</TableCell>
                 <TableCell>
-                    <button
-            onClick={() => handleEdit(user)}
-            className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
-          >
-            Update User
-          </button>
+                  <span
+                    style={{
+                      color:
+                        user.status === "SUCCESS"
+                          ? "green"
+                          : user.status === "FAILED"
+                            ? "red"
+                            : "goldenrod",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {user.status}
+                  </span>
+                </TableCell>
+
+                <TableCell>{user.trxTime}</TableCell>
+                <TableCell>{user.createdAt}</TableCell>
+                <TableCell>{user.updatedAt}</TableCell>
+
+                <TableCell>
+                  <button
+                    onClick={() => handleEdit(user)}
+                    className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
+                  >
+                    Update User
+                  </button>
                 </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-4 text-muted">
+              <TableCell colSpan={5} className="text-muted py-4 text-center">
                 No files found.
               </TableCell>
             </TableRow>
@@ -206,11 +246,11 @@ export default function ImportTable() {
 
       {/* Pagination */}
       {!loading && totalPages > 1 && (
-        <div className="flex justify-end items-center gap-4 mt-4">
+        <div className="mt-4 flex items-center justify-end gap-4">
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="px-3 bg-primary text-white py-1 border rounded disabled:opacity-50"
+            className="rounded border bg-primary px-3 py-1 text-white disabled:opacity-50"
           >
             Previous
           </button>
@@ -220,7 +260,7 @@ export default function ImportTable() {
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 bg-primary text-white border rounded disabled:opacity-50"
+            className="rounded border bg-primary px-3 py-1 text-white disabled:opacity-50"
           >
             Next
           </button>
@@ -228,9 +268,12 @@ export default function ImportTable() {
       )}
 
       {/* Modal: Create User */}
-     <CreateImportModal setRefresh={setRefresh} open={open} onClose={() => setOpen(false)} />
-           {/* <UpdateUserModal data={editableData} setRefresh={setRefresh} open={open2} onClose={() => setOpen2(false)} /> */}
-
+      <CreateImportModal
+        setRefresh={setRefresh}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
+      {/* <UpdateUserModal data={editableData} setRefresh={setRefresh} open={open2} onClose={() => setOpen2(false)} /> */}
     </div>
   );
 }

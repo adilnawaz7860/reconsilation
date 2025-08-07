@@ -11,12 +11,10 @@ import { MenuItem } from "./menu-item";
 import { useSidebarContext } from "./sidebar-context";
 import { Code2 } from "lucide-react";
 
-
 export function Sidebar() {
   const pathname = usePathname();
   const NAV_DATA = useNavData();
-     
-  
+
   const { setIsOpen, isOpen, isMobile, toggleSidebar } = useSidebarContext();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
@@ -32,8 +30,8 @@ export function Sidebar() {
   useEffect(() => {
     // Keep collapsible open, when it's subpage is active
     NAV_DATA.some((section) => {
-      return section.items.some((item ) => {
-        return item.items.some((subItem :any) => {
+      return section.items.some((item) => {
+        return item.items.some((subItem: any) => {
           if (subItem.url === pathname) {
             if (!expandedItems.includes(item.title)) {
               toggleExpanded(item.title);
@@ -73,9 +71,9 @@ export function Sidebar() {
             <Link
               href={"/"}
               onClick={() => isMobile && toggleSidebar()}
-              className="px-0 py-2.5 flex gap-2 items-center text-2xl font-bold text-primary min-[850px]:py-0"
+              className="flex items-center gap-2 px-0 py-2.5 text-2xl font-bold text-primary min-[850px]:py-0"
             >
-             <Code2/> Wisi-Pay
+              <Code2 /> Wisi-Pay
             </Link>
 
             {isMobile && (
@@ -94,9 +92,9 @@ export function Sidebar() {
           <div className="custom-scrollbar mt-6 flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
             {NAV_DATA.map((section) => (
               <div key={section.label} className="mb-6">
-                <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
+                {/* <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
                   {section.label}
-                </h2>
+                </h2> */}
 
                 <nav role="navigation" aria-label={section.label}>
                   <ul className="space-y-2">
@@ -132,7 +130,7 @@ export function Sidebar() {
                                 className="ml-9 mr-0 space-y-1.5 pb-[15px] pr-0 pt-2"
                                 role="menu"
                               >
-                                {item.items.map((subItem : any) => (
+                                {item.items.map((subItem: any) => (
                                   <li key={subItem.title} role="none">
                                     <MenuItem
                                       as="link"
@@ -148,10 +146,7 @@ export function Sidebar() {
                           </div>
                         ) : (
                           (() => {
-                            const href =
-                              "url" in item
-                                ? item.url + ""
-                                : "/" 
+                            const href = "url" in item ? item.url + "" : "/";
 
                             return (
                               <MenuItem

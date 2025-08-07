@@ -12,60 +12,59 @@ import {
 } from "@/components/ui/table";
 
 import CreateUserModal from "./CreateUserModal";
-import { getallUsers, getCurrentUser, updateUserStatus } from "@/services/authService";
+import {
+  getallUsers,
+  getCurrentUser,
+  updateUserStatus,
+} from "@/services/authService";
 import { Switch } from "@/components/FormElements/switch";
 import { toast } from "sonner";
 import UpdateUserModal from "./UpdateUserModal";
 
 // Dummy user data
 
-
 export default function UserTable() {
-   const [open, setOpen] = useState(false);
-    const [open2, setOpen2] = useState(false);
-  const [users ,setUsers] = useState([]);
-  const [refresh ,setRefresh] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [open2, setOpen2] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   const [editableData, setEditableData] = useState({});
-   const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [search, setSearch] = useState("");
-    const [role ,setRole] = useState("")
-    const [statusFilter, setStatusFilter] = useState("all");
-    const [loading ,setLoading] = useState(false);
-    const rowsPerPage = 4;
-    
-    
-      const getUser = async() => {
-        const res = await getCurrentUser();
-        setRole(res?.data?.role)
-    
-          
-      }
-    
-     useEffect(() => {
-      getUser()
-     },[])
-    
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [role, setRole] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [loading, setLoading] = useState(false);
+  const rowsPerPage = 4;
 
-    
-    const formatDate = (dateStr : any) =>
+  const getUser = async () => {
+    const res = await getCurrentUser();
+    setRole(res?.data?.role);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const formatDate = (dateStr: any) =>
     new Intl.DateTimeFormat("en-IN", {
       dateStyle: "medium",
       timeStyle: "short",
     }).format(new Date(dateStr));
-  
-   
-
-
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await getallUsers(currentPage, rowsPerPage, search, statusFilter); 
-        console.log(res, "res")// assumes it returns an array
+        const res = await getallUsers(
+          currentPage,
+          rowsPerPage,
+          search,
+          statusFilter,
+        );
+        console.log(res, "res"); // assumes it returns an array
         if (res.statusCode === 200) {
           setUsers(res?.data?.users);
-           setTotalPages(res?.data?.totalPages || 1);
+          setTotalPages(res?.data?.totalPages || 1);
         }
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -77,22 +76,20 @@ export default function UserTable() {
     fetchUsers();
   }, [refresh]);
 
-  const handleEdit = (data : any) => {
-     setEditableData(data)
-     setOpen2(true);
-    
-  }
+  const handleEdit = (data: any) => {
+    setEditableData(data);
+    setOpen2(true);
+  };
 
-   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-
-
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNext = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
   return (
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
-        <div className="flex items-center gap-4 justify-between w-full md:w-auto">
+      <div className="mb-6 flex w-full gap-4 md:flex-row md:items-center md:justify-between">
+        {/* <div className="flex items-center gap-4 justify-between w-full md:w-auto">
          <input
             className="border rounded-md border-gray-3 p-3"
             placeholder="Search by name, email"
@@ -109,22 +106,17 @@ export default function UserTable() {
             <option value="INACTIVE">Inactive</option>
           </select>
        
-        </div>
+        </div> */}
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          {
-            role === "ADMIN" && (
-                 <button
-            onClick={() => setOpen(true)}
-            className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
-          >
-            Create User
-          </button>
-            )
-          }
-           
-        
-         
+        <div className="flex-col gap-4 sm:flex-row sm:items-center">
+          {role === "ADMIN" && (
+            <button
+              onClick={() => setOpen(true)}
+              className="rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
+            >
+              Create User
+            </button>
+          )}
         </div>
       </div>
 
@@ -132,12 +124,24 @@ export default function UserTable() {
       <Table>
         <TableHeader>
           <TableRow className="[&>th]:text-center">
-            <TableHead className="text-left"><div className="flex justify-start items-center">Name</div></TableHead>
-            <TableHead className="text-left"><div className="flex justify-start items-center">Email</div></TableHead>
-            <TableHead className="text-left"><div className="flex justify-start items-center">Phone</div></TableHead>
-            <TableHead className="text-left"><div className="flex justify-start items-center">Status</div></TableHead>
-             <TableHead className="text-left"><div className="flex justify-start items-center">Created At</div></TableHead>
-            <TableHead className="text-left"><div className="flex justify-start items-center">Action</div></TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Name</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Email</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Phone</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Status</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Created At</div>
+            </TableHead>
+            <TableHead className="text-left">
+              <div className="flex items-center justify-start">Action</div>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -150,47 +154,47 @@ export default function UserTable() {
               </TableRow>
             ))
           ) : users.length > 0 ? (
-            users.map((user : any) => (
+            users.map((user: any) => (
               <TableRow key={user._id}>
                 <TableCell className="text-left">{user.fullName}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone}</TableCell>
                 <TableCell>
-                 
-               <Switch
-  withIcon
-  checked={user.status === "ACTIVE"}
-  onChange={async (checked) => {
-    const newStatus = checked ? "ACTIVE" : "INACTIVE";
+                  <Switch
+                    withIcon
+                    checked={user.status === "ACTIVE"}
+                    onChange={async (checked) => {
+                      const newStatus = checked ? "ACTIVE" : "INACTIVE";
 
-    try {
-      await updateUserStatus(user._id); 
-      setRefresh((prev : any) => !prev)
-      // Call your API
-      toast.success(`User ${user.fullName} is now ${newStatus}`);
-      // Optionally update local user list if not using refetch
-    } catch (err) {
-      toast.error("Failed to update user status");
-    }
-  }}
-/>
-<span className="ml-2">{user.status}</span>
-                  
+                      try {
+                        await updateUserStatus(user._id);
+                        setRefresh((prev: any) => !prev);
+                        // Call your API
+                        toast.success(
+                          `User ${user.fullName} is now ${newStatus}`,
+                        );
+                        // Optionally update local user list if not using refetch
+                      } catch (err) {
+                        toast.error("Failed to update user status");
+                      }
+                    }}
+                  />
+                  <span className="ml-2">{user.status}</span>
                 </TableCell>
-                 <TableCell>{formatDate(user.createdAt)}</TableCell>
+                <TableCell>{formatDate(user.createdAt)}</TableCell>
                 <TableCell>
-                    <button
-            onClick={() => handleEdit(user)}
-            className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
-          >
-            Update User
-          </button>
+                  <button
+                    onClick={() => handleEdit(user)}
+                    className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
+                  >
+                    Update User
+                  </button>
                 </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-4 text-muted">
+              <TableCell colSpan={5} className="text-muted py-4 text-center">
                 No users found.
               </TableCell>
             </TableRow>
@@ -200,11 +204,11 @@ export default function UserTable() {
 
       {/* Pagination */}
       {!loading && totalPages > 1 && (
-        <div className="flex justify-end items-center gap-4 mt-4">
+        <div className="mt-4 flex items-center justify-end gap-4">
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="px-3 bg-primary text-white py-1 border rounded disabled:opacity-50"
+            className="rounded border bg-primary px-3 py-1 text-white disabled:opacity-50"
           >
             Previous
           </button>
@@ -214,7 +218,7 @@ export default function UserTable() {
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 bg-primary text-white border rounded disabled:opacity-50"
+            className="rounded border bg-primary px-3 py-1 text-white disabled:opacity-50"
           >
             Next
           </button>
@@ -222,9 +226,17 @@ export default function UserTable() {
       )}
 
       {/* Modal: Create User */}
-     <CreateUserModal setRefresh={setRefresh} open={open} onClose={() => setOpen(false)} />
-           <UpdateUserModal data={editableData} setRefresh={setRefresh} open={open2} onClose={() => setOpen2(false)} />
-
+      <CreateUserModal
+        setRefresh={setRefresh}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
+      <UpdateUserModal
+        data={editableData}
+        setRefresh={setRefresh}
+        open={open2}
+        onClose={() => setOpen2(false)}
+      />
     </div>
   );
 }
