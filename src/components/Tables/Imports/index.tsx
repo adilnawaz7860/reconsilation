@@ -77,8 +77,16 @@ export default function ImportTable() {
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-6xl w-full overflow-x-auto rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
+    <div className="max-w-6xl flex items-center justify-center w-full overflow-x-auto rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex w-full items-center justify-between gap-4 md:w-auto">

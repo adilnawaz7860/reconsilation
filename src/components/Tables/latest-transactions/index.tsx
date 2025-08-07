@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/table";
 import { getallTransactions } from "@/services/transactionService";
 import CreateTransactionModal from "./CreateTransactionModal";
+import Link from "next/link";
+import { ArrowBigRight, ArrowBigRightIcon } from "lucide-react";
 
 
 export default function LatestTransactionsTable() {
@@ -62,9 +64,14 @@ const formatDate = (dateStr?: string) => {
 
   return (
     <div className="rounded-[10px] bg-white px-4 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
-       <h2 className="mb-4 text-lg font-bold text-dark dark:text-white">
+       <div className="flex justify-between items-center px-2">
+        <h2 className="mb-4 text-lg font-bold text-dark dark:text-white">
         Latest Transactions
       </h2>
+       <Link className="flex items-center" href={'/dashboard/transactions'}>
+<ArrowBigRightIcon className="h-8 w-8 text-primary hover:text-blue-500" />
+       </Link>
+       </div>
 
       <Table>
         <TableHeader>

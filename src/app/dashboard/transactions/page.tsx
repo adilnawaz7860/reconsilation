@@ -18,7 +18,7 @@ const TablesPage = () => {
     <>
       <Breadcrumb pageName="Transactions" />
 
-      <div className="w-full space-y-10 overflow-auto xl:w-[1000px] xl:max-w-[1000px]">
+      <div className="w-full space-y-10">
         <LatestTransactionsTable />
       </div>
     </>
