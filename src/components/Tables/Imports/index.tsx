@@ -86,9 +86,9 @@ export default function ImportTable() {
   }
 
   return (
-    <div className="max-w-6xl flex items-center justify-center w-full overflow-x-auto rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
+    <div className="max-w-6xl  w-full overflow-x-auto rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="mb-6 flex flex-col gap-4 md:flex-row w-full md:items-center md:justify-between">
         <div className="flex w-full items-center justify-between gap-4 md:w-auto">
           {/* <input
             className="border rounded-md border-gray-3 p-3"
@@ -254,8 +254,8 @@ export default function ImportTable() {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={5} className="text-muted py-4 text-center">
-                No files found.
+              <TableCell colSpan={10} className="text-muted py-4 text-center">
+                No Data found.
               </TableCell>
             </TableRow>
           )}

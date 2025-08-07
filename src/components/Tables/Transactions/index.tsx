@@ -224,7 +224,7 @@ import { getallTransactions } from "@/services/transactionService";
  import CreateTransactionModal from "./CreateTransactionModal";
 
 
-export default function ImportTable() {
+export default function LatestTransactionsTable() {
    const [transactions, setTransactions] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -287,7 +287,7 @@ export default function ImportTable() {
     );
   }
   return (
-    <div className="max-w-6xl flex items-center justify-center w-full overflow-x-auto rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
+    <div className="max-w-6xl  w-full overflow-x-auto rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex w-full items-center justify-between gap-4 md:w-auto">
