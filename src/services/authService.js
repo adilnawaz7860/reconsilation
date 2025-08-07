@@ -68,7 +68,7 @@ export const refreshAccessToken = async () => {
 };
 
 // Get Current User
-export const getallUsers = async (page=1 , limit=6 , status="", filter="") => {
+export const getallUsers = async (page=1 , limit=10 , status="", filter="") => {
     const token = sessionStorage.getItem("token")
 
   const res = await axios.get(`${API}/get-users?page=${page}&limit=${limit}`, {

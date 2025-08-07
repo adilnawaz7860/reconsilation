@@ -35,7 +35,7 @@ export default function UserTable() {
   const [role, setRole] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(false);
-  const rowsPerPage = 4;
+  const rowsPerPage = 10;
 
   const getUser = async () => {
     const res = await getCurrentUser();
@@ -74,7 +74,7 @@ export default function UserTable() {
     };
 
     fetchUsers();
-  }, [refresh]);
+  }, [refresh , currentPage]);
 
   const handleEdit = (data: any) => {
     setEditableData(data);
