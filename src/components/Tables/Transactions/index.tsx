@@ -101,17 +101,17 @@ export default function LatestTransactionsTable() {
         <Table>
           <TableHeader>
             <TableRow className="whitespace-nowrap [&>th]:text-center">
-              <TableHead className="text-left">Transaction ID</TableHead>
-              <TableHead className="text-left">Order ID</TableHead>
-              <TableHead className="text-left">Amount</TableHead>
-              <TableHead className="text-center">Type</TableHead>
-              <TableHead className="text-center">Email</TableHead>
-              <TableHead className="text-center">UTR</TableHead>
-              <TableHead className="text-center">Amount</TableHead>
-              <TableHead className="text-center">Status</TableHead>
-              <TableHead className="text-center">Created At</TableHead>
-              <TableHead className="text-center">Updated At</TableHead>
-              <TableHead className="text-center">Actions</TableHead>
+              <TableHead className="text-left whitespace-nowrap">Transaction ID</TableHead>
+              <TableHead className="text-left whitespace-nowrap">Order ID</TableHead>
+              <TableHead className="text-left whitespace-nowrap">Amount</TableHead>
+              <TableHead className="text-center whitespace-nowrap">Type</TableHead>
+              <TableHead className="text-center whitespace-nowrap">Email</TableHead>
+              <TableHead className="text-center whitespace-normap">UTR</TableHead>
+              <TableHead className="text-center whitespace-nowrap">Amount</TableHead>
+              <TableHead className="text-center whitespace-nowrap">Status</TableHead>
+              <TableHead className="text-center whitespace-nowrap">Created At</TableHead>
+              <TableHead className="text-center whitespace-nowrap">Updated At</TableHead>
+              <TableHead className="text-center whitespace-nowrap">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -126,15 +126,15 @@ export default function LatestTransactionsTable() {
             ) : transactions.length > 0 ? (
               transactions.map((tx: any) => (
                 <TableRow key={tx._id}>
-                  <TableCell className="text-left">
+                  <TableCell className="text-left whitespace-nowrap" >
                     {tx.transactionid}
                   </TableCell>
-                  <TableCell>{tx.orderid}</TableCell>
-                  <TableCell>{tx.amount}</TableCell>
-                  <TableCell>{tx.type}</TableCell>
-                  <TableCell>{tx.merchantid?.email}</TableCell>
-                  <TableCell>{tx.utr}</TableCell>
-                  <TableCell>₹{tx.amount.toFixed(2)}</TableCell>
+                  <TableCell className="whitespace-nowrap">{tx.orderid}</TableCell>
+                  <TableCell className="whitespace-nowrap">{tx.amount}</TableCell>
+                  <TableCell className="whitespace-nowrap">{tx.type}</TableCell>
+                  <TableCell className="whitespace-nowrap">{tx.merchantid?.email}</TableCell>
+                  <TableCell className="whitespace-nowrap">{tx.utr}</TableCell>
+                  <TableCell className="whitespace-nowrap">₹{tx.amount.toFixed(2)}</TableCell>
                   <TableCell className="text-center">
                     <span
                       className={`text-sm font-medium capitalize ${
@@ -148,13 +148,13 @@ export default function LatestTransactionsTable() {
                       {tx.status}
                     </span>
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center whitespace-nowrap">
                     {formatDate(tx.createdAt)}
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center whitespace-nowrap">
                     {formatDate(tx.updatedAt)}
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center whitespace-nowrap">
                     <div className="flex justify-center gap-2">
                       <button
                         onClick={() => handleTransaction(tx)}

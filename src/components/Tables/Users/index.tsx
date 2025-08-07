@@ -88,7 +88,7 @@ export default function UserTable() {
   return (
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
-      <div className="mb-6 flex w-full gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="mb-6 flex w-full gap-4 md:flex-row md:items-center md:justify-end">
         {/* <div className="flex items-center gap-4 justify-between w-full md:w-auto">
          <input
             className="border rounded-md border-gray-3 p-3"

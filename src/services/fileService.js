@@ -24,10 +24,10 @@ export const upLoadFile = async (file) => {
 
 
 // Get All Excels
-export const getallExcels = async (page=1 , limit=10 , status="", filter="") => {
+export const getallExcels = async (page=1 , limit=10) => {
     const token = sessionStorage.getItem("token")
 
-  const res = await axios.get(`${API}?page=${page}&limit=${limit}`, {
+  const res = await axios.get(`${API}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

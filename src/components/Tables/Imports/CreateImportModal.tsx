@@ -41,6 +41,7 @@ export default function CreateImportModal({ open, onClose, setRefresh }: Props) 
           resetForm();
           toast.success(res?.message || "File uploaded successfully");
           onClose();
+          setRefresh((prev :any) => !prev)
 
 
       }else{

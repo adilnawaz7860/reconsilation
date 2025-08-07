@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import ImportTable from "@/components/Tables/Imports";
 
 export const metadata: Metadata = {
-  title: "Tables",
+  title: "Excel",
 };
 
 const TablesPage = () => {
@@ -12,7 +12,7 @@ const TablesPage = () => {
     <>
       <Breadcrumb pageName="Import" />
 
-      <div className="space-y-10">
+      <div className="space-y-10 w-full xl:w-[1100px] xl:max-w-[1100px] overflow-auto">
        <ImportTable/>
       </div>
     </>

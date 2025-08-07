@@ -47,7 +47,7 @@ export function useNavData() {
           items: [],
         },
          {
-          title: "Imports",
+          title: "Excel Data",
           url: "/dashboard/import",
           icon: Icons.Alphabet,
           items: [],

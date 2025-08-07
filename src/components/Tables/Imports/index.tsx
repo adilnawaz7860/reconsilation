@@ -33,7 +33,7 @@ export default function ImportTable() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(false);
-  const rowsPerPage = 4;
+  const rowsPerPage = 10;
 
   const getUser = async () => {
     const res = await getCurrentUser();
@@ -53,10 +53,14 @@ export default function ImportTable() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await getallExcels();
+        const res = await getallExcels(currentPage , rowsPerPage);
         console.log(res, "res"); // assumes it returns an array
         if (res.statusCode === 200) {
           setExcels(res?.data);
+          const total = res.data.length;
+          console.log(total , "totally") // assuming data includes ALL records
+        const totalPages = Math.ceil(total / rowsPerPage);
+        setTotalPages(totalPages);
         }
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -68,10 +72,6 @@ export default function ImportTable() {
     fetchUsers();
   }, [refresh]);
 
-  const handleEdit = (data: any) => {
-    setEditableData(data);
-    setOpen2(true);
-  };
 
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () =>
@@ -130,7 +130,7 @@ export default function ImportTable() {
               <div className="flex items-center justify-start">merchantMdr</div>
             </TableHead>
             <TableHead className="text-left">
-              <div className="flex items-center justify-start">
+              <div className="flex items-center whitespace-nowrap justify-start">
                 Settle Amount
               </div>
             </TableHead>
@@ -150,7 +150,7 @@ export default function ImportTable() {
             </TableHead>
 
             <TableHead className="text-left">
-              <div className="flex items-center justify-start">
+              <div className="flex items-center whitespace-nowrap justify-start">
                 Customer Name
               </div>
             </TableHead>
@@ -199,10 +199,10 @@ export default function ImportTable() {
                 <TableCell>{user.merchantMdr}</TableCell>
                 <TableCell>{user.netSettlementAmt}</TableCell>
                 <TableCell>{user.payerMobile}</TableCell>
-                <TableCell>{user.payerName}</TableCell>
+                <TableCell className="whitespace-nowrap">{user.payerName}</TableCell>
                 <TableCell>{user.payerVpa}</TableCell>
                 <TableCell>{user.utr}</TableCell>
-                <TableCell>{user.customerName}</TableCell>
+                <TableCell className="whitespace-nowrap">{user.customerName}</TableCell>
                 <TableCell>{user.customerVpa}</TableCell>
                 <TableCell>
                   <span
@@ -220,17 +220,17 @@ export default function ImportTable() {
                   </span>
                 </TableCell>
 
-                <TableCell>{user.trxTime}</TableCell>
-                <TableCell>{user.createdAt}</TableCell>
-                <TableCell>{user.updatedAt}</TableCell>
+                <TableCell className="whitespace-nowrap">{user.trxTime}</TableCell>
+                <TableCell className="whitespace-nowrap">{user.createdAt}</TableCell>
+                <TableCell className="whitespace-nowrap">{user.updatedAt}</TableCell>
 
                 <TableCell>
-                  <button
+                  {/* <button
                     onClick={() => handleEdit(user)}
                     className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
                   >
                     Update User
-                  </button>
+                  </button> */}
                 </TableCell>
               </TableRow>
             ))
@@ -273,7 +273,7 @@ export default function ImportTable() {
         open={open}
         onClose={() => setOpen(false)}
       />
-      {/* <UpdateUserModal data={editableData} setRefresh={setRefresh} open={open2} onClose={() => setOpen2(false)} /> */}
+     
     </div>
   );
 }
