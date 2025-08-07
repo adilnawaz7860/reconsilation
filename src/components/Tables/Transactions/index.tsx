@@ -23,7 +23,7 @@ export default function LatestTransactionsTable() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [trxData, setTrxData] = useState({});
 
-  const rowsPerPage = 4;
+  const rowsPerPage = 10;
 
   const fetchTransactions = async () => {
     try {
