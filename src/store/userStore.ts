@@ -18,10 +18,11 @@ export const useUserStore = create<UserStore>()(
     (set) => ({
       user: null,
       setUser: (user) => set({ user }),
-      clearUser: () => set({ user: null }),
+      clearUser: () => set({ user: null }), // store से user clear करेगा
     }),
     {
-      name: "auth-user", // key in localStorage
+      name: "auth-user", // localStorage key name
+  
     }
   )
 );

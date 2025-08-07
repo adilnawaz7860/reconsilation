@@ -18,10 +18,7 @@ import { useUserStore } from "@/store/userStore";
 
 export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
-    const user = useUserStore((state) => state.user);
-
-    
-   
+  const user = useUserStore((state) => state.user);
 
   const router = useRouter();
 
@@ -31,44 +28,55 @@ export function UserInfo() {
     img: "/images/user/user-03.png",
   };
 
-  const handleLogout = async() => {
-     const res = await logoutUser()
-     if(res.statusCode === 200){
-      sessionStorage.removeItem("token")
-      toast.success(res.message)
-      router.push("/auth/sign-in")
-     }
-  }
+  const handleLogout = async () => {
+    try {
+      const res = await logoutUser();
+
+      if (res.statusCode === 200) {
+        sessionStorage.removeItem("token");
+        useUserStore.getState().clearUser();
+
+        setIsOpen(false);
+
+        toast.success(res.message);
+
+        router.push("/auth/sign-in");
+      } else {
+        toast.error(res.message || "Logout failed");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong");
+    }
+  };
 
   return (
     <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
       <DropdownTrigger className="rounded align-middle outline-none ring-primary ring-offset-2 focus-visible:ring-1 dark:ring-offset-gray-dark">
         <span className="sr-only">My Account</span>
 
-     <figure className="flex items-center gap-3">
-  {/* Initials instead of image */}
-  <div className="size-12 flex items-center justify-center rounded-full bg-primary text-white font-medium text-lg">
-    {user?.name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
-      .toUpperCase()}
-  </div>
+        <figure className="flex items-center gap-3">
+          {/* Initials instead of image */}
+          <div className="flex size-12 items-center justify-center rounded-full bg-primary text-lg font-medium text-white">
+            {user?.name
+              .split(" ")
+              .map((word) => word[0])
+              .join("")
+              .toUpperCase()}
+          </div>
 
-  <figcaption className="flex items-center gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
-    <span className="capitalize">{user?.name}</span>
+          <figcaption className="flex items-center gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
+            <span className="capitalize">{user?.name}</span>
 
-    <ChevronUpIcon
-      aria-hidden
-      className={cn(
-        "rotate-180 transition-transform",
-        isOpen && "rotate-0",
-      )}
-      strokeWidth={1.5}
-    />
-  </figcaption>
-</figure>
-
+            <ChevronUpIcon
+              aria-hidden
+              className={cn(
+                "rotate-180 transition-transform",
+                isOpen && "rotate-0",
+              )}
+              strokeWidth={1.5}
+            />
+          </figcaption>
+        </figure>
       </DropdownTrigger>
 
       <DropdownContent
@@ -77,23 +85,21 @@ export function UserInfo() {
       >
         <h2 className="sr-only">User information</h2>
 
-       
-     <figure className="flex items-center p-2 gap-3">
-  {/* Initials instead of image */}
-  <div className="size-12 flex items-center justify-center rounded-full bg-primary text-white font-medium text-lg">
-    {user?.name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
-      .toUpperCase()}
-  </div>
+        <figure className="flex items-center gap-3 p-2">
+          {/* Initials instead of image */}
+          <div className="flex size-12 items-center justify-center rounded-full bg-primary text-lg font-medium text-white">
+            {user?.name
+              .split(" ")
+              .map((word) => word[0])
+              .join("")
+              .toUpperCase()}
+          </div>
 
-  <figcaption className="flex flex-col items-start gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
-    <span className="capitalize">{user?.name}</span>
-     <span className="text-sm">{user?.email}</span>
-     
+          <figcaption className="flex flex-col items-start gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
+            <span className="capitalize">{user?.name}</span>
+            <span className="text-sm">{user?.email}</span>
 
-    {/* <ChevronUpIcon
+            {/* <ChevronUpIcon
       aria-hidden
       className={cn(
         "rotate-180 transition-transform",
@@ -101,9 +107,8 @@ export function UserInfo() {
       )}
       strokeWidth={1.5}
     /> */}
-  </figcaption>
-</figure>
-
+          </figcaption>
+        </figure>
 
         <hr className="border-[#E8E8E8] dark:border-dark-3" />
 
