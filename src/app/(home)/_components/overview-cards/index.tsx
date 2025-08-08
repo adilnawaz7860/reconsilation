@@ -1,48 +1,55 @@
-import { compactFormat } from "@/lib/format-number";
-import { getOverviewData } from "../../fetch";
+"use client"
+import { getAllUsersCount, getAllTransactionsCount } from "@/services/analyticsService";
+import { useEffect, useState } from "react";
+import { getCurrentUser } from "@/services/authService";
 import { OverviewCard } from "./card";
 import * as icons from "./icons";
+import { OverviewCardsSkeleton } from "../overview-cards/skeleton";
 
-export async function OverviewCardsGroup() {
-  const { views, profit, transactions, users } = await getOverviewData();
+export function OverviewCardsGroup() {
+  const [users, setUsers] = useState("");
+  const [transactions, setTransactions] = useState("");
+  const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const getRole = async () => {
+    const res = await getCurrentUser();
+    setRole(res?.data?.role || "");
+  };
+
+  const getUser = async () => {
+    const res = await getAllUsersCount();
+    setUsers(res?.data?.totalUsers ?? "0");
+  };
+
+  const getTransaction = async () => {
+    const res = await getAllTransactionsCount();
+    setTransactions(res?.data?.totalTransactions ?? "0");
+  };
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      await Promise.all([getRole(), getUser(), getTransaction()]);
+      setLoading(false);
+    })();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-1 2xl:gap-7.5">
+        <OverviewCardsSkeleton />
+       
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-      <OverviewCard
-        label="Total Views"
-        data={{
-          ...views,
-          value: compactFormat(views.value),
-        }}
-        Icon={icons.Views}
-      />
-
-      <OverviewCard
-        label="Total Profit"
-        data={{
-          ...profit,
-          value: "$" + compactFormat(profit.value),
-        }}
-        Icon={icons.Profit}
-      />
-
-      <OverviewCard
-        label="Total Transactions"
-        data={{
-          ...transactions,
-          value: compactFormat(transactions.value),
-        }}
-        Icon={icons.Product}
-      />
-
-      <OverviewCard
-        label="Total Users"
-        data={{
-          ...users,
-          value: compactFormat(users.value),
-        }}
-        Icon={icons.Users}
-      />
+      {role === "ADMIN" && (
+        <OverviewCard label="Total Users" data={users} Icon={icons.Users} />
+      )}
+      <OverviewCard label="Total Transactions" data={transactions} Icon={icons.Product} />
     </div>
   );
 }

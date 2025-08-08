@@ -19,6 +19,7 @@ import { useUserStore } from "@/store/userStore";
 export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
   const user = useUserStore((state) => state.user);
+  console.log(user , "userrese")
 
   const router = useRouter();
 
@@ -58,7 +59,7 @@ export function UserInfo() {
           {/* Initials instead of image */}
           <div className="flex size-12 items-center justify-center rounded-full bg-primary text-lg font-medium text-white">
             {user?.name
-              .split(" ")
+              ?.split(" ")
               .map((word) => word[0])
               .join("")
               .toUpperCase()}

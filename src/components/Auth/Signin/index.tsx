@@ -47,8 +47,10 @@ if (!mounted) return null;
      const res = await loginUser(values)
        console.log(res , "responsne")
       const { accessToken, refreshToken,name, user,email, role } = res.data;
+
+      console.log(user , "user")
      
-        useUserStore.getState().setUser({ name : user.fullName, email : user.email, role });
+        useUserStore.getState().setUser({ name : user.name ?? user.fullName, email : user.email, role });
      
 
     // Save token to sessionStorage
