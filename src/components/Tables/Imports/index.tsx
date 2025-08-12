@@ -30,10 +30,9 @@ export default function ImportTable() {
   const [loading, setLoading] = useState(false);
   const rowsPerPage = 10;
   const [startDate, setStartDate] = useState("");
-const [endDate, setEndDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-
-console.log(startDate ,endDate)
+  console.log(startDate, endDate);
 
   const getUser = async () => {
     const res = await getCurrentUser();
@@ -59,7 +58,14 @@ console.log(startDate ,endDate)
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await getallExcels(currentPage, rowsPerPage , statusFilter , search ,startDate, endDate);
+        const res = await getallExcels(
+          currentPage,
+          rowsPerPage,
+          statusFilter,
+          search,
+          startDate,
+          endDate,
+        );
         console.log(res, "res"); // assumes it returns an array
         if (res.statusCode === 200) {
           setExcels(res?.data?.excels ?? res?.data);
@@ -76,33 +82,44 @@ console.log(startDate ,endDate)
     };
 
     fetchUsers();
-  }, [refresh, currentPage ,search ,statusFilter , startDate , endDate]);
+  }, [refresh, currentPage, search, statusFilter, startDate, endDate]);
 
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handleFilter = () => {
+    setSearch("");
+    setStatusFilter("all");
+    setStartDate("");
+    setEndDate("");
+    setCurrentPage(1);
+  };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl  w-full overflow-x-auto rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
+    <div className="w-full max-w-6xl overflow-x-auto rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 md:flex-row w-full md:items-center md:justify-between">
-        <div className="flex w-full items-center justify-between gap-4 md:w-auto">
+      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        {/* Filters Section */}
+        <div className="flex w-full flex-col gap-4 md:flex-row md:items-center md:gap-3">
+          {/* Search Input */}
           <input
-            className="border rounded-md border-gray-3 p-3"
-            placeholder="Search by name, email"
+            className="w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-white md:w-96 lg:w-[400px]"
+            placeholder="Search by Transaction ID, UTR, Payer Name, Customer Name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+
+          {/* Status Filter */}
           <select
-            className="border border-gray-3 p-3 rounded-md text-sm dark:bg-gray-800 dark:text-white"
+            className="w-full rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -110,29 +127,39 @@ console.log(startDate ,endDate)
             <option value="SUCCESS">Success</option>
             <option value="FAILED">Failed</option>
             <option value="PENDING">Pending</option>
-
           </select>
-           <input
-    type="date"
-    className="border border-gray-300 p-3 rounded-md text-sm dark:bg-gray-800 dark:text-white"
-    value={startDate}
-    onChange={(e) => setStartDate(e.target.value)}
-  />
 
-  {/* End Date */}
-  <input
-    type="date"
-    className="border border-gray-300 p-3 rounded-md text-sm dark:bg-gray-800 dark:text-white"
-    value={endDate}
-    onChange={(e) => setEndDate(e.target.value)}
-  />
+          {/* Start Date */}
+          <input
+            type="date"
+            className="w-full rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+
+          {/* End Date */}
+          <input
+            type="date"
+            className="w-full rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+
+          {/* Clear Filter Button */}
+          <button
+            onClick={handleFilter}
+            className="w-full whitespace-nowrap rounded-md border bg-primary px-3 py-3 text-sm text-white hover:bg-opacity-90 md:w-auto"
+          >
+            Clear Filter
+          </button>
         </div>
 
+        {/* Actions Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           {role !== "ADMIN" && (
             <button
               onClick={() => setOpen(true)}
-              className="ml-4 rounded bg-primary px-4 py-3 text-white hover:bg-opacity-90"
+              className="w-full whitespace-nowrap rounded bg-primary px-4 py-3 text-sm text-white hover:bg-opacity-90 sm:w-auto"
             >
               Import File
             </button>
