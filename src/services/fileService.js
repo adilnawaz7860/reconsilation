@@ -1,6 +1,8 @@
 import axios from "axios";
 const API = "http://lww0004ko0kcck8oc44k44wo.31.97.227.219.sslip.io/api/excel-sheet";
 
+// const API = "http://localhost:8000/api/excel-sheet";
+
 
 
 
@@ -27,7 +29,7 @@ export const upLoadFile = async (file) => {
 export const getallExcels = async (page=1 , limit=10) => {
     const token = sessionStorage.getItem("token")
 
-  const res = await axios.get(`${API}`, {
+  const res = await axios.get(`${API}?page=${page}&limit=${limit}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -3,12 +3,10 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Image from "next/image";
 
-import { useState } from "react";
-import { CameraIcon } from "./_components/icons";
-import { SocialAccounts } from "./_components/social-accounts";
+import { useEffect, useState } from "react";
 import { getInitials } from "@/libs/utils";
-import { useUserStore } from "@/store/userStore";
 import UpdateUserModal from "./updateUserProfile";
+import { getCurrentUser } from "@/services/authService";
 
 export default function Page() {
   const [data, setData] = useState({
@@ -16,9 +14,23 @@ export default function Page() {
     profilePhoto: "/images/user/user-03.png",
     coverPhoto: "/images/cover/cover-01.png",
   });
-   const user = useUserStore((state) => state.user);
    const [open ,setOpen] = useState(false);
-      console.log(user , 'suerdss')
+     const [userInfo ,setUserInfo] = useState<any>({})
+     
+   
+     
+   
+     useEffect(() => {
+       getUserInfo();
+     },[])
+   
+    const getUserInfo = async () => {
+       const res = await getCurrentUser();
+       console.log(res?.data , "datatada")
+       setUserInfo(res?.data || "");
+     };
+     
+    
 
   const handleChange = (e: any) => {
     if (e.target.name === "profilePhoto" ) {
@@ -60,7 +72,7 @@ export default function Page() {
               height: "auto",
             }}
           />
-          <div onClick={() =>setOpen(true)} className="absolute  bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4">
+          {/* <div onClick={() =>setOpen(true)} className="absolute  bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4">
             <label
               htmlFor="cover"
               className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-[15px] py-[5px] text-body-sm font-medium text-white hover:bg-opacity-90"
@@ -78,14 +90,14 @@ export default function Page() {
 
               <span onClick={() =>setOpen(true)}>Edit</span>
             </label>
-          </div>
+          </div> */}
         </div>
       <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11.5">
       <div className="relative z-30 mx-auto -mt-22 h-30 w-full max-w-30 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:max-w-[176px] sm:p-3">
         <div className="relative drop-shadow-2 flex items-center justify-center overflow-hidden rounded-full bg-primary text-white text-4xl font-bold h-full w-full">
           {data?.profilePhoto ? (
             <>
-              {getInitials(user?.name)}
+              {getInitials(userInfo?.fullName)}
               <label
                 htmlFor="profilePhoto"
                 className="absolute bottom-0 right-0 flex size-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2"
@@ -102,17 +114,17 @@ export default function Page() {
               </label>
             </>
           ) : (
-            getInitials(user?.name)
+            getInitials(userInfo?.fullName)
           )}
         </div>
       </div>
 
       <div className="mt-4">
-        <h3 className="mb-1 text-heading-6 font-bold text-dark dark:text-white">
-          {user?.name}
+        <h3 className="mb-1 text-heading-6 capitalize font-bold text-dark dark:text-white">
+          {userInfo?.fullName}
         </h3>
-        <p className="font-medium text-body-sm text-muted-foreground">
-         {user?.email}
+        <p className="font-medium  text-body-sm text-muted-foreground">
+         {userInfo?.email}
         </p>
 
         {/* <div className="mx-auto mb-5.5 mt-5 grid max-w-[370px] grid-cols-1 gap-4">

@@ -30,7 +30,7 @@ if (!mounted) return null;
       <div className="mb-6 flex items-center justify-between">
              <div className="px-0 py-2.5 flex gap-2 items-center   text-3xl font-bold text-primary min-[850px]:py-0"
             >
-             <Code2 className="text-xl"/> Wisi-Pay </div>
+             <Code2 className="h-8 w-8"/> Wisi-Pay </div>
 
       </div>
 
@@ -130,7 +130,7 @@ if (!mounted) return null;
               >
                
                 {isSubmitting ? (
-                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-t-transparent dark:border-primary dark:border-t-transparent" />) : (" Sign In")
+                  <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-white border-t-transparent dark:border-primary dark:border-t-transparent" />) : (" Sign In")
                 }
               </button>
             </div>

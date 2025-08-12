@@ -1,5 +1,5 @@
 "use client"
-import { getAllUsersCount, getAllTransactionsCount } from "@/services/analyticsService";
+import { getAllUsersCount, getAllTransactionsCount} from "@/services/analyticsService";
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/services/authService";
 import { OverviewCard } from "./card";
@@ -9,6 +9,7 @@ import { OverviewCardsSkeleton } from "../overview-cards/skeleton";
 export function OverviewCardsGroup() {
   const [users, setUsers] = useState("");
   const [transactions, setTransactions] = useState("");
+  const [excels, setExcels] = useState("");
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -26,6 +27,11 @@ export function OverviewCardsGroup() {
     const res = await getAllTransactionsCount();
     setTransactions(res?.data?.totalTransactions ?? "0");
   };
+
+  //   const getData = async () => {
+  //   const res = await getAllExcelsCount();
+  //   setExcels(res?.data?.totalExcelData ?? "0");
+  // };
 
   useEffect(() => {
     (async () => {
@@ -50,6 +56,7 @@ export function OverviewCardsGroup() {
         <OverviewCard label="Total Users" data={users} Icon={icons.Users} />
       )}
       <OverviewCard label="Total Transactions" data={transactions} Icon={icons.Product} />
+       {/* <OverviewCard label="Total Excel Datas" data={excels} Icon={icons.Product} /> */}
     </div>
   );
 }

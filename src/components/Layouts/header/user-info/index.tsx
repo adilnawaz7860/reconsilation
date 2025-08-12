@@ -9,26 +9,29 @@ import {
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LogOutIcon, SettingsIcon, UserIcon } from "./icons";
-import { logoutUser } from "@/services/authService";
+import { getCurrentUser, logoutUser } from "@/services/authService";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
 
 export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
-  const user = useUserStore((state) => state.user);
-  console.log(user , "userrese")
+  const [userInfo ,setUserInfo] = useState<any>({})
+  
 
   const router = useRouter();
 
-  const USER = {
-    name: "John Smith",
-    email: "johnson@wisepay.com",
-    img: "/images/user/user-03.png",
-  };
+  useEffect(() => {
+    getUserInfo();
+  },[])
 
+ const getUserInfo = async () => {
+    const res = await getCurrentUser();
+    console.log(res?.data , "datatada")
+    setUserInfo(res?.data || "");
+  };
   const handleLogout = async () => {
     try {
       const res = await logoutUser();
@@ -58,15 +61,15 @@ export function UserInfo() {
         <figure className="flex items-center gap-3">
           {/* Initials instead of image */}
           <div className="flex size-12 items-center justify-center rounded-full bg-primary text-lg font-medium text-white">
-            {user?.name
+            {userInfo?.fullName
               ?.split(" ")
-              .map((word) => word[0])
+              .map((word : any) => word[0])
               .join("")
               .toUpperCase()}
           </div>
 
           <figcaption className="flex items-center gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
-            <span className="capitalize">{user?.name}</span>
+            <span className="capitalize">{userInfo?.fullName}</span>
 
             <ChevronUpIcon
               aria-hidden
@@ -89,16 +92,16 @@ export function UserInfo() {
         <figure className="flex items-center gap-3 p-2">
           {/* Initials instead of image */}
           <div className="flex size-12 items-center justify-center rounded-full bg-primary text-lg font-medium text-white">
-            {user?.name
-              .split(" ")
-              .map((word) => word[0])
+            {userInfo?.fullName
+              ?.split(" ")
+              .map((word : any) => word[0])
               .join("")
               .toUpperCase()}
           </div>
 
           <figcaption className="flex flex-col items-start gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
-            <span className="capitalize">{user?.name}</span>
-            <span className="text-sm">{user?.email}</span>
+            <span className="capitalize">{userInfo?.fullName}</span>
+            <span className="text-sm">{userInfo?.email}</span>
 
             {/* <ChevronUpIcon
       aria-hidden
