@@ -29,6 +29,11 @@ export default function ImportTable() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(false);
   const rowsPerPage = 10;
+  const [startDate, setStartDate] = useState("");
+const [endDate, setEndDate] = useState("");
+
+
+console.log(startDate ,endDate)
 
   const getUser = async () => {
     const res = await getCurrentUser();
@@ -54,10 +59,10 @@ export default function ImportTable() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await getallExcels(currentPage, rowsPerPage);
+        const res = await getallExcels(currentPage, rowsPerPage , statusFilter , search ,startDate, endDate);
         console.log(res, "res"); // assumes it returns an array
         if (res.statusCode === 200) {
-          setExcels(res?.data?.excels);
+          setExcels(res?.data?.excels ?? res?.data);
           const total = res.data.length;
           console.log(total, "totally"); // assuming data includes ALL records
           const totalPages = Math.ceil(res?.data?.totalCount / rowsPerPage);
@@ -71,7 +76,7 @@ export default function ImportTable() {
     };
 
     fetchUsers();
-  }, [refresh, currentPage]);
+  }, [refresh, currentPage ,search ,statusFilter , startDate , endDate]);
 
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () =>
@@ -90,7 +95,7 @@ export default function ImportTable() {
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 md:flex-row w-full md:items-center md:justify-between">
         <div className="flex w-full items-center justify-between gap-4 md:w-auto">
-          {/* <input
+          <input
             className="border rounded-md border-gray-3 p-3"
             placeholder="Search by name, email"
             value={search}
@@ -102,9 +107,25 @@ export default function ImportTable() {
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option value="all">All</option>
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
-          </select> */}
+            <option value="SUCCESS">Success</option>
+            <option value="FAILED">Failed</option>
+            <option value="PENDING">Pending</option>
+
+          </select>
+           <input
+    type="date"
+    className="border border-gray-300 p-3 rounded-md text-sm dark:bg-gray-800 dark:text-white"
+    value={startDate}
+    onChange={(e) => setStartDate(e.target.value)}
+  />
+
+  {/* End Date */}
+  <input
+    type="date"
+    className="border border-gray-300 p-3 rounded-md text-sm dark:bg-gray-800 dark:text-white"
+    value={endDate}
+    onChange={(e) => setEndDate(e.target.value)}
+  />
         </div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">

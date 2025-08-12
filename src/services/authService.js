@@ -68,17 +68,29 @@ export const refreshAccessToken = async () => {
   return res.data;
 };
 
-// Get Current User
-export const getallUsers = async (page=1 , limit=10 , status="", filter="") => {
-    const token = sessionStorage.getItem("token")
+// Get All User
+export const getallUsers = async (page = 1, limit = 10, search = "", status = "") => {
+  const token = sessionStorage.getItem("token");
 
-  const res = await axios.get(`${API}/get-users?page=${page}&limit=${limit}`, {
+  const params = new URLSearchParams();
+  if (search) params.append("search", search);
+  if (status && status.toLowerCase() !== "all") params.append("status", status);
+  params.append("page", page);
+  params.append("limit", limit);
+
+  const url = `${API}/get-users?${params.toString()}`;
+  console.log("Requesting:", url);
+
+  const res = await axios.get(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+
   return res.data;
 };
+
+
 
 // Change Current Password
 export const changePassword = async (data, token) => {

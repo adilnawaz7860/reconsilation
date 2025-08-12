@@ -63,7 +63,7 @@ export default function UserTable() {
         );
         console.log(res, "res"); // assumes it returns an array
         if (res.statusCode === 200) {
-          setUsers(res?.data?.users);
+          setUsers(res?.data?.users ?? []);
           setTotalPages(res?.data?.totalPages || 1);
         }
       } catch (error) {
@@ -74,7 +74,7 @@ export default function UserTable() {
     };
 
     fetchUsers();
-  }, [refresh , currentPage]);
+  }, [refresh , currentPage  , search , statusFilter]);
 
   const handleEdit = (data: any) => {
     setEditableData(data);
@@ -96,8 +96,8 @@ export default function UserTable() {
   return (
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
-      <div className="mb-6 flex w-full gap-4 md:flex-row md:items-center md:justify-end">
-        {/* <div className="flex items-center gap-4 justify-between w-full md:w-auto">
+      <div className="mb-6 flex w-full gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-4 justify-between w-full md:w-auto">
          <input
             className="border rounded-md border-gray-3 p-3"
             placeholder="Search by name, email"
@@ -114,7 +114,7 @@ export default function UserTable() {
             <option value="INACTIVE">Inactive</option>
           </select>
        
-        </div> */}
+        </div>
 
         <div className="flex-col gap-4 sm:flex-row sm:items-center">
           {role === "ADMIN" && (
