@@ -251,7 +251,7 @@ export default function ImportTable() {
                   {user.transactionid}
                 </TableCell>
                 <TableCell>{user.amount}</TableCell>
-                <TableCell>{user.merchantId}</TableCell>
+                <TableCell>{user?.merchantId?._id}</TableCell>
                 <TableCell>{user.merchantMdr}</TableCell>
                 <TableCell>{user.netSettlementAmt}</TableCell>
                 <TableCell>{user.payerMobile}</TableCell>
