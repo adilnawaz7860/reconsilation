@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DateRangePicker } from "react-date-range";
+import { DateRange } from "react-date-range";
 import { format } from "date-fns";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -46,13 +46,13 @@ export default function ImportTable() {
     getUser();
   }, []);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [range, setRange] = useState([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
+  const [range, setRange] = useState<any>([
+  {
+    startDate: null,
+    endDate: null,
+    key: "selection",
+  },
+]);
   const formatDate = (dateStr?: any) => {
     if (!dateStr) return "Invalid Date";
 
@@ -97,13 +97,14 @@ export default function ImportTable() {
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  const handleFilter = () => {
-    setSearch("");
-    setStatusFilter("all");
-    setRange([{ startDate: null, endDate: null, key: "selection" }]);
-    setCurrentPage(1);
-  };
-  const handleDateChange = (item) => {
+const handleFilter = () => {
+  setSearch("");
+  setStatusFilter("all");
+  setRange([{ startDate: null, endDate: null, key: "selection" }]);
+  // setCurrentPage(1);
+};
+
+  const handleDateChange = (item : any) => {
     setRange([item.selection]);
     setStartDate(item.selection.startDate);
     setEndDate(item.selection.endDate);
@@ -179,33 +180,51 @@ export default function ImportTable() {
             ranges={range}
             direction="horizontal"
           /> */}
-          <div className="relative">
-            <input
-              readOnly
-              value={
-                range[0].startDate && range[0].endDate
-                  ? `${format(range[0].startDate, "dd/MM/yyyy")} - ${format(
-                      range[0].endDate,
-                      "dd/MM/yyyy",
-                    )}`
-                  : "Select date range"
-              }
-              onClick={() => setShowDatePicker(!showDatePicker)}
-              className="w-full cursor-pointer rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
-            />
+     <div className="relative">
+  <input
+    readOnly
+    value={
+      range[0].startDate && range[0].endDate
+        ? `${format(range[0].startDate, "dd/MM/yyyy")} - ${format(
+            range[0].endDate,
+            "dd/MM/yyyy"
+          )}`
+        : "Select date range"
+    }
+    onClick={() => setShowDatePicker(!showDatePicker)}
+    className="w-full cursor-pointer rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
+  />
 
-            {showDatePicker && (
-              <div className="absolute z-50 mt-2 shadow-lg">
-                <DateRangePicker
-                  onChange={handleDateChange}
-                  moveRangeOnFirstSelection={false}
-                  months={1}
-                  ranges={range}
-                  direction="horizontal"
-                />
-              </div>
-            )}
-          </div>
+  {showDatePicker && (
+    <div className="absolute z-50 mt-2 rounded-md border bg-white p-2 shadow-lg dark:bg-gray-800">
+      <DateRange
+        ranges={range}
+        onChange={(item :any) => {
+          setRange([item.selection]);
+          setStartDate(item.selection.startDate);
+          setEndDate(item.selection.endDate);
+
+          // Close only if both start and end dates are picked and they are not the same day
+          if (
+            item.selection.startDate &&
+            item.selection.endDate &&
+            item.selection.startDate.getTime() !==
+              item.selection.endDate.getTime()
+          ) {
+            setShowDatePicker(false);
+          }
+        }}
+        moveRangeOnFirstSelection={false}
+        months={1}
+        direction="horizontal"
+        showDateDisplay={false}
+        rangeColors={["#4F46E5"]}
+      />
+    </div>
+  )}
+</div>
+
+
 
           {/* Clear Filter Button */}
           <button
@@ -230,7 +249,7 @@ export default function ImportTable() {
       </div>
 
       {/* Table */}
-      <Table>
+      <Table className="min-h-[500px]">
         <TableHeader className="whitespace-nowrap">
           <TableRow className="[&>th]:text-center">
             <TableHead className="text-left">
@@ -244,6 +263,10 @@ export default function ImportTable() {
             <TableHead className="text-left">
               <div className="flex items-center justify-start">merchantId</div>
             </TableHead>
+              <TableHead className="text-left">
+              <div className="flex items-center justify-start">Email</div>
+            </TableHead>
+            
             <TableHead className="text-left">
               <div className="flex items-center justify-start">merchantMdr</div>
             </TableHead>
@@ -314,9 +337,10 @@ export default function ImportTable() {
                 </TableCell>
                 <TableCell>{user.amount}</TableCell>
                 <TableCell>
-                  {typeof user.merchantId === "object"
-                    ? user.merchantId?.email
-                    : user.merchantId}
+                  {user.merchantId?._id}
+                </TableCell>
+                <TableCell className="whitespace-nowrap">
+                  {user.merchantId?.email}
                 </TableCell>
                 <TableCell>{user.merchantMdr}</TableCell>
                 <TableCell>{user.netSettlementAmt}</TableCell>

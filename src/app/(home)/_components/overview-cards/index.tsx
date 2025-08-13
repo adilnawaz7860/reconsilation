@@ -5,6 +5,8 @@ import { getCurrentUser } from "@/services/authService";
 import { OverviewCard } from "./card";
 import * as icons from "./icons";
 import { OverviewCardsSkeleton } from "../overview-cards/skeleton";
+import StatusDonutChart from './status-donut'
+
 
 export function OverviewCardsGroup() {
   const [users, setUsers] = useState("");
@@ -33,6 +35,7 @@ export function OverviewCardsGroup() {
     setAmount(res?.data?.totalAmount ?? "0");
      setTotalPayin(res?.data?.totalPayin ?? "0");
           setTotalPayout(res?.data?.totalPayout ?? "0");
+          setProgressPercent(res?.data)
 
   };
 
@@ -59,9 +62,9 @@ export function OverviewCardsGroup() {
   }
 
   return (
- <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 2xl:gap-7.5">
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 2xl:gap-7.5">
   {/* Cards container */}
-  <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
+  <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
     {role === "ADMIN" && (
       <OverviewCard label="Total Users" data={users} Icon={icons.Users} />
     )}
@@ -72,18 +75,11 @@ export function OverviewCardsGroup() {
   </div>
 
   {/* Progress bar */}
-  {/* <div className="row-span-2 flex flex-col justify-center bg-white p-6 shadow-1 dark:bg-gray-dark rounded-lg p-6">
-    <p className="text-white mb-4">Transaction Completion</p>
-    <div className="flex-1 flex flex-col justify-center">
-      <div className="w-full bg-gray-700 rounded-full h-4">
-        <div
-          className="bg-green-500 h-4 rounded-full"
-          style={{ width: `${progressPercent}%` }}
-        ></div>
-      </div>
-      <p className="text-xs text-gray-400 mt-2">{progressPercent}% Completed</p>
-    </div>
-  </div> */}
+  <div className="row-span-2 flex flex-col gap-4 mb-6 justify-center bg-white p-6 shadow-1 dark:bg-gray-dark rounded-lg">
+    <p className="mb-1.5 text-heading-6 font-bold text-dark dark:text-white">Transaction Status</p>
+    <StatusDonutChart progress={progressPercent}/>
+   
+  </div>
 </div>
 
 

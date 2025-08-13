@@ -113,7 +113,7 @@ const formatDate = (dateStr?: string) => {
                 <TableCell className="text-center">
                   <span
                     className={`text-sm font-medium capitalize ${
-                      tx.status === "completed"
+                      tx.status === "SUCCESS"
                         ? "text-green-600"
                         : tx.status === "PENDING"
                         ? "text-yellow-500"

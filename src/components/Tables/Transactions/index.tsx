@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DateRangePicker } from "react-date-range";
+import { DateRange } from "react-date-range";
 import { format } from "date-fns";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -52,10 +52,10 @@ export default function LatestTransactionsTable() {
   };
 
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [range, setRange] = useState([
+  const [range, setRange] = useState<any>([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: null,
+      endDate: null,
       key: "selection",
     },
   ]);
@@ -81,13 +81,13 @@ export default function LatestTransactionsTable() {
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  const handleFilter = () => {
-    setSearch("");
-    setStatusFilter("all");
-    setStartDate("");
-    setRange([{ startDate: null, endDate: null, key: "selection" }]);
-  };
-  const handleDateChange = (item) => {
+ const handleFilter = () => {
+  setSearch("");
+  setStatusFilter("all");
+  setRange([{ startDate: null, endDate: null, key: "selection" }]);
+  // setCurrentPage(1);
+};
+  const handleDateChange = (item :any) => {
     setRange([item.selection]);
     setStartDate(item.selection.startDate);
     setEndDate(item.selection.endDate);
@@ -134,32 +134,48 @@ export default function LatestTransactionsTable() {
       onChange={(e) => setEndDate(e.target.value)}
     /> */}
           <div className="relative">
-            <input
-              readOnly
-              value={
-                range[0].startDate && range[0].endDate
-                  ? `${format(range[0].startDate, "dd/MM/yyyy")} - ${format(
-                      range[0].endDate,
-                      "dd/MM/yyyy",
-                    )}`
-                  : "Select date range"
-              }
-              onClick={() => setShowDatePicker(!showDatePicker)}
-              className="w-full cursor-pointer rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
-            />
-
-            {showDatePicker && (
-              <div className="absolute z-50 mt-2 shadow-lg">
-                <DateRangePicker
-                  onChange={handleDateChange}
-                  moveRangeOnFirstSelection={false}
-                  months={1}
-                  ranges={range}
-                  direction="horizontal"
-                />
-              </div>
-            )}
-          </div>
+           <input
+             readOnly
+             value={
+               range[0].startDate && range[0].endDate
+                 ? `${format(range[0].startDate, "dd/MM/yyyy")} - ${format(
+                     range[0].endDate,
+                     "dd/MM/yyyy"
+                   )}`
+                 : "Select date range"
+             }
+             onClick={() => setShowDatePicker(!showDatePicker)}
+             className="w-full cursor-pointer rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
+           />
+         
+           {showDatePicker && (
+             <div className="absolute z-50 mt-2 rounded-md border bg-white p-2 shadow-lg dark:bg-gray-800">
+               <DateRange
+                 ranges={range}
+                 onChange={(item :any) => {
+                   setRange([item.selection]);
+                   setStartDate(item.selection.startDate);
+                   setEndDate(item.selection.endDate);
+         
+                   // Close only if both start and end dates are picked and they are not the same day
+                   if (
+                     item.selection.startDate &&
+                     item.selection.endDate &&
+                     item.selection.startDate.getTime() !==
+                       item.selection.endDate.getTime()
+                   ) {
+                     setShowDatePicker(false);
+                   }
+                 }}
+                 moveRangeOnFirstSelection={false}
+                 months={1}
+                 direction="horizontal"
+                 showDateDisplay={false}
+                 rangeColors={["#4F46E5"]}
+               />
+             </div>
+           )}
+         </div>
 
           {/* Clear Filter Button */}
           <button
