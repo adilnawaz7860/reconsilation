@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DateRangePicker } from "react-date-range";
+import { format } from "date-fns";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 import {
   Table,
   TableBody,
@@ -47,6 +51,14 @@ export default function LatestTransactionsTable() {
     }
   };
 
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [range, setRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
   useEffect(() => {
     fetchTransactions();
   }, [currentPage, search, statusFilter, startDate, endDate]);
@@ -73,37 +85,41 @@ export default function LatestTransactionsTable() {
     setSearch("");
     setStatusFilter("all");
     setStartDate("");
-    setEndDate("");
-    setCurrentPage(1);
+    setRange([{ startDate: null, endDate: null, key: "selection" }]);
+  };
+  const handleDateChange = (item) => {
+    setRange([item.selection]);
+    setStartDate(item.selection.startDate);
+    setEndDate(item.selection.endDate);
   };
   return (
     <div className="w-full max-w-6xl rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
       {/* Header */}
-<div className="mb-6 flex flex-col gap-4">
-  {/* Search & Filters */}
-  <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-3">
-    {/* Search Input */}
-    <input
-      className="w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-white md:w-96 lg:w-[400px]"
-      placeholder="Search by Transaction ID, UTR, Payer Name, Customer Name..."
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-    />
+      <div className="mb-6 flex flex-col gap-4">
+        {/* Search & Filters */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-3">
+          {/* Search Input */}
+          <input
+            className="w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-white md:w-96 lg:w-[400px]"
+            placeholder="Search by Transaction ID, UTR, Payer Name, Customer Name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-    {/* Status Filter */}
-    <select
-      className="w-full rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
-      value={statusFilter}
-      onChange={(e) => setStatusFilter(e.target.value)}
-    >
-      <option value="all">All</option>
-      <option value="SUCCESS">Success</option>
-      <option value="FAILED">Failed</option>
-      <option value="PENDING">Pending</option>
-    </select>
+          {/* Status Filter */}
+          <select
+            className="w-full rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">All</option>
+            <option value="SUCCESS">Success</option>
+            <option value="FAILED">Failed</option>
+            <option value="PENDING">Pending</option>
+          </select>
 
-    {/* Start Date */}
-    <input
+          {/* Start Date */}
+          {/* <input
       type="date"
       className="w-full rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
       value={startDate}
@@ -111,23 +127,49 @@ export default function LatestTransactionsTable() {
     />
 
     {/* End Date */}
-    <input
+          {/* <input
       type="date"
       className="w-full rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
       value={endDate}
       onChange={(e) => setEndDate(e.target.value)}
-    />
+    /> */}
+          <div className="relative">
+            <input
+              readOnly
+              value={
+                range[0].startDate && range[0].endDate
+                  ? `${format(range[0].startDate, "dd/MM/yyyy")} - ${format(
+                      range[0].endDate,
+                      "dd/MM/yyyy",
+                    )}`
+                  : "Select date range"
+              }
+              onClick={() => setShowDatePicker(!showDatePicker)}
+              className="w-full cursor-pointer rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
+            />
 
-    {/* Clear Filter Button */}
-    <button
-      onClick={handleFilter}
-      className="w-full rounded-md border bg-primary px-3 py-3 text-sm text-white hover:bg-opacity-90 md:w-auto"
-    >
-      Clear Filter
-    </button>
-  </div>
-</div>
+            {showDatePicker && (
+              <div className="absolute z-50 mt-2 shadow-lg">
+                <DateRangePicker
+                  onChange={handleDateChange}
+                  moveRangeOnFirstSelection={false}
+                  months={1}
+                  ranges={range}
+                  direction="horizontal"
+                />
+              </div>
+            )}
+          </div>
 
+          {/* Clear Filter Button */}
+          <button
+            onClick={handleFilter}
+            className="w-full rounded-md border bg-primary px-3 py-3 text-sm text-white hover:bg-opacity-90 md:w-auto"
+          >
+            Clear Filter
+          </button>
+        </div>
+      </div>
 
       {/* Table container for responsiveness */}
       <div className="overflow-x-auto">

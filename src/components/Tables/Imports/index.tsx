@@ -10,7 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { DateRangePicker } from "react-date-range";
+import { format } from "date-fns";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 import CreateImportModal from "./CreateImportModal";
 import { getallExcels } from "@/services/fileService";
 import { getCurrentUser } from "@/services/authService";
@@ -42,7 +45,14 @@ export default function ImportTable() {
   useEffect(() => {
     getUser();
   }, []);
-
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [range, setRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
   const formatDate = (dateStr?: any) => {
     if (!dateStr) return "Invalid Date";
 
@@ -90,11 +100,14 @@ export default function ImportTable() {
   const handleFilter = () => {
     setSearch("");
     setStatusFilter("all");
-    setStartDate("");
-    setEndDate("");
+    setRange([{ startDate: null, endDate: null, key: "selection" }]);
     setCurrentPage(1);
   };
-
+  const handleDateChange = (item) => {
+    setRange([item.selection]);
+    setStartDate(item.selection.startDate);
+    setEndDate(item.selection.endDate);
+  };
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
@@ -129,7 +142,7 @@ export default function ImportTable() {
             <option value="PENDING">Pending</option>
           </select>
 
-          {/* Start Date */}
+          {/* Start Date
           <input
             type="date"
             className="w-full rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
@@ -138,12 +151,61 @@ export default function ImportTable() {
           />
 
           {/* End Date */}
-          <input
+          {/* <input
             type="date"
             className="w-full rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-          />
+          />  */}
+
+          {/* <div>
+            <DateRangePicker
+              onChange={(item) => setRange([item.selection])}
+              showSelectionPreview={true}
+              moveRangeOnFirstSelection={false}
+              months={1}
+              ranges={range}
+              direction="horizontal"
+            />
+            <div className="mt-2">
+              <p>From: {range[0].startDate.toDateString()}</p>
+              <p>To: {range[0].endDate.toDateString()}</p>
+            </div>
+          </div> */}
+          {/* <DateRangePicker
+            onChange={(item) => setRange([item.selection])}
+            moveRangeOnFirstSelection={false}
+            months={1}
+            ranges={range}
+            direction="horizontal"
+          /> */}
+          <div className="relative">
+            <input
+              readOnly
+              value={
+                range[0].startDate && range[0].endDate
+                  ? `${format(range[0].startDate, "dd/MM/yyyy")} - ${format(
+                      range[0].endDate,
+                      "dd/MM/yyyy",
+                    )}`
+                  : "Select date range"
+              }
+              onClick={() => setShowDatePicker(!showDatePicker)}
+              className="w-full cursor-pointer rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
+            />
+
+            {showDatePicker && (
+              <div className="absolute z-50 mt-2 shadow-lg">
+                <DateRangePicker
+                  onChange={handleDateChange}
+                  moveRangeOnFirstSelection={false}
+                  months={1}
+                  ranges={range}
+                  direction="horizontal"
+                />
+              </div>
+            )}
+          </div>
 
           {/* Clear Filter Button */}
           <button
@@ -251,7 +313,11 @@ export default function ImportTable() {
                   {user.transactionid}
                 </TableCell>
                 <TableCell>{user.amount}</TableCell>
-                <TableCell>{user.merchantId}</TableCell>
+                <TableCell>
+                  {typeof user.merchantId === "object"
+                    ? user.merchantId?.email
+                    : user.merchantId}
+                </TableCell>
                 <TableCell>{user.merchantMdr}</TableCell>
                 <TableCell>{user.netSettlementAmt}</TableCell>
                 <TableCell>{user.payerMobile}</TableCell>
