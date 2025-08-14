@@ -47,12 +47,12 @@ export default function ImportTable() {
   }, []);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [range, setRange] = useState<any>([
-  {
-    startDate: null,
-    endDate: null,
-    key: "selection",
-  },
-]);
+    {
+      startDate: null,
+      endDate: null,
+      key: "selection",
+    },
+  ]);
   const formatDate = (dateStr?: any) => {
     if (!dateStr) return "Invalid Date";
 
@@ -97,14 +97,25 @@ export default function ImportTable() {
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-const handleFilter = () => {
-  setSearch("");
-  setStatusFilter("all");
-  setRange([{ startDate: null, endDate: null, key: "selection" }]);
-  // setCurrentPage(1);
-};
+  const handleFilter = () => {
+    setSearch("");
+    setStatusFilter("all");
 
-  const handleDateChange = (item : any) => {
+    setRange([
+      {
+        startDate: null,
+        endDate: null,
+        key: "selection",
+      },
+    ]);
+    setStartDate("");
+    setEndDate("");
+
+    setCurrentPage(1);
+    // setCurrentPage(1);
+  };
+
+  const handleDateChange = (item: any) => {
     setRange([item.selection]);
     setStartDate(item.selection.startDate);
     setEndDate(item.selection.endDate);
@@ -180,51 +191,49 @@ const handleFilter = () => {
             ranges={range}
             direction="horizontal"
           /> */}
-     <div className="relative">
-  <input
-    readOnly
-    value={
-      range[0].startDate && range[0].endDate
-        ? `${format(range[0].startDate, "dd/MM/yyyy")} - ${format(
-            range[0].endDate,
-            "dd/MM/yyyy"
-          )}`
-        : "Select date range"
-    }
-    onClick={() => setShowDatePicker(!showDatePicker)}
-    className="w-full cursor-pointer rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
-  />
+          <div className="relative">
+            <input
+              readOnly
+              value={
+                range[0].startDate && range[0].endDate
+                  ? `${format(range[0].startDate, "dd/MM/yyyy")} - ${format(
+                      range[0].endDate,
+                      "dd/MM/yyyy",
+                    )}`
+                  : "Select date range"
+              }
+              onClick={() => setShowDatePicker(!showDatePicker)}
+              className="w-full cursor-pointer rounded-md border border-gray-300 p-3 text-sm dark:bg-gray-800 dark:text-white md:w-auto"
+            />
 
-  {showDatePicker && (
-    <div className="absolute z-50 mt-2 rounded-md border bg-white p-2 shadow-lg dark:bg-gray-800">
-      <DateRange
-        ranges={range}
-        onChange={(item :any) => {
-          setRange([item.selection]);
-          setStartDate(item.selection.startDate);
-          setEndDate(item.selection.endDate);
+            {showDatePicker && (
+              <div className="absolute z-50 mt-2 rounded-md border bg-white p-2 shadow-lg dark:bg-gray-800">
+                <DateRange
+                  ranges={range}
+                  onChange={(item: any) => {
+                    setRange([item.selection]);
+                    setStartDate(item.selection.startDate);
+                    setEndDate(item.selection.endDate);
 
-          // Close only if both start and end dates are picked and they are not the same day
-          if (
-            item.selection.startDate &&
-            item.selection.endDate &&
-            item.selection.startDate.getTime() !==
-              item.selection.endDate.getTime()
-          ) {
-            setShowDatePicker(false);
-          }
-        }}
-        moveRangeOnFirstSelection={false}
-        months={1}
-        direction="horizontal"
-        showDateDisplay={false}
-        rangeColors={["#4F46E5"]}
-      />
-    </div>
-  )}
-</div>
-
-
+                    // Close only if both start and end dates are picked and they are not the same day
+                    if (
+                      item.selection.startDate &&
+                      item.selection.endDate &&
+                      item.selection.startDate.getTime() !==
+                        item.selection.endDate.getTime()
+                    ) {
+                      setShowDatePicker(false);
+                    }
+                  }}
+                  moveRangeOnFirstSelection={false}
+                  months={1}
+                  direction="horizontal"
+                  showDateDisplay={false}
+                  rangeColors={["#4F46E5"]}
+                />
+              </div>
+            )}
+          </div>
 
           {/* Clear Filter Button */}
           <button
@@ -263,10 +272,10 @@ const handleFilter = () => {
             <TableHead className="text-left">
               <div className="flex items-center justify-start">merchantId</div>
             </TableHead>
-              <TableHead className="text-left">
+            <TableHead className="text-left">
               <div className="flex items-center justify-start">Email</div>
             </TableHead>
-            
+
             <TableHead className="text-left">
               <div className="flex items-center justify-start">merchantMdr</div>
             </TableHead>
@@ -336,9 +345,7 @@ const handleFilter = () => {
                   {user.transactionid}
                 </TableCell>
                 <TableCell>{user.amount}</TableCell>
-                <TableCell>
-                  {user.merchantId?._id}
-                </TableCell>
+                <TableCell>{user.merchantId?._id}</TableCell>
                 <TableCell className="whitespace-nowrap">
                   {user.merchantId?.email}
                 </TableCell>
