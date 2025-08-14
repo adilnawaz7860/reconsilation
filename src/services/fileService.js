@@ -1,6 +1,5 @@
 import axios from "axios";
-const API = "http://lww0004ko0kcck8oc44k44wo.31.97.227.219.sslip.io/api/excel-sheet";
-
+const API = `${process.env.NEXT_PUBLIC_URL}/api/excel-sheet`;
 // const API = "http://localhost:8000/api/excel-sheet";
 
 

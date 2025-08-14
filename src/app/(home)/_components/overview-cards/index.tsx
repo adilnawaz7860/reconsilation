@@ -44,13 +44,19 @@ export function OverviewCardsGroup() {
   //   setExcels(res?.data?.totalExcelData ?? "0");
   // };
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
+useEffect(() => {
+  (async () => {
+    setLoading(true);
+    try {
       await Promise.all([getRole(), getUser(), getTransaction()]);
-      setLoading(false);
-    })();
-  }, []);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    } finally {
+      setLoading(false); // always runs
+    }
+  })();
+}, []);
+
 
   if (loading) {
     return (
