@@ -10,21 +10,34 @@ import {
 } from "recharts";
 
 export default function StatusDonutChart({ progress }) {
-  const data = [
-    { name: "Success", value: progress?.completedCount || 0.00001 },
-    { name: "Failed", value: progress?.failedCount || 0.00001 },
-    { name: "Pending", value: progress?.pendingCount || 0.0001 },
-  ];
+  console.log(progress , "progress")
+  // Extract values safely
+  const completed = progress?.completedCount || 0;
+  const failed = progress?.failedCount || 0;
+  const pending = progress?.pendingCount || 0;
 
-  const COLORS = ["#00C49F", "#FF4D4F", "#FFBB28"]; // Green, Red, Yellow
+  const total = completed + failed + pending;
 
-  // Custom tooltip (smaller & cleaner)
+  // If total is 0, show a single "No Data" slice
+  const data =
+    total === 0
+      ? [{ name: "No Data", value: 1 }]
+      : [
+          { name: "Success", value: completed },
+          { name: "Failed", value: failed },
+          { name: "Pending", value: pending },
+        ];
+
+  const COLORS = total === 0 ? ["#ccc"] : ["#00C49F", "#FF4D4F", "#FFBB28"];
+
+  // Custom tooltip
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
+      const { name, value, color } = payload[0];
       return (
         <div className="bg-white text-sm shadow-md rounded-md px-2 py-1 border border-gray-200">
-          <p className="font-medium" style={{ color: payload[0].color }}>
-            {payload[0].name}: {payload[0].value}
+          <p className="font-medium" style={{ color }}>
+            {name}: {value}
           </p>
         </div>
       );
@@ -32,23 +45,20 @@ export default function StatusDonutChart({ progress }) {
     return null;
   };
 
-  // Custom legend with small circles
-  const renderLegend = (props) => {
-    const { payload } = props;
-    return (
-      <ul className="flex justify-center mt-4 gap-4">
-        {payload.map((entry, index) => (
-          <li key={`item-${index}`} className="flex items-center gap-1">
-            <span
-              className="w-3 h-3 rounded-full inline-block"
-              style={{ backgroundColor: entry.color }}
-            ></span>
-            <span className="text-sm">{entry.value}</span>
-          </li>
-        ))}
-      </ul>
-    );
-  };
+  // Custom legend
+  const renderLegend = ({ payload }) => (
+    <ul className="flex justify-center mt-4 gap-4">
+      {payload.map((entry, index) => (
+        <li key={`item-${index}`} className="flex items-center gap-1">
+          <span
+            className="w-3 h-3 rounded-full inline-block"
+            style={{ backgroundColor: entry.color }}
+          ></span>
+          <span className="text-sm">{entry.value}</span>
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
     <div className="w-full h-64">
@@ -61,7 +71,7 @@ export default function StatusDonutChart({ progress }) {
             innerRadius={60}
             outerRadius={80}
             dataKey="value"
-            paddingAngle={2}
+            // paddingAngle={0}
           >
             {data.map((_, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index]} />

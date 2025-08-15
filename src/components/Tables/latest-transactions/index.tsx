@@ -84,8 +84,8 @@ const formatDate = (dateStr?: string) => {
              <TableHead className="text-center">UTR</TableHead>
               <TableHead className="text-center">Amount</TableHead>
                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-center">Created At</TableHead>
-                <TableHead className="text-center">Updated At</TableHead>
+                <TableHead className="text-center whitespace-nowrap">Created At</TableHead>
+                <TableHead className="text-center whitespace-nowrap">Updated At</TableHead>
                   <TableHead className="text-center">Actions</TableHead>
 
 
@@ -124,8 +124,8 @@ const formatDate = (dateStr?: string) => {
                   </span>
                 </TableCell>
 
-                <TableCell className="text-center">{formatDate(tx.createdAt)}</TableCell>
-                <TableCell className="text-center">{formatDate(tx.updatedAt)}</TableCell>
+                <TableCell className="text-center whitespace-nowrap">{formatDate(tx.createdAt)}</TableCell>
+                <TableCell className="text-center whitespace-nowrap">{formatDate(tx.updatedAt)}</TableCell>
                   <TableCell className="text-center">
                     <div className="flex gap-2 justify-center">
                      <button

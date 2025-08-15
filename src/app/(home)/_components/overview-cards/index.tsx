@@ -10,10 +10,10 @@ import StatusDonutChart from './status-donut'
 
 export function OverviewCardsGroup() {
   const [users, setUsers] = useState("");
-  const [amount, setAmount] = useState("");
-  const [totalPayin, setTotalPayin] = useState("");
-  const [totalPayout, setTotalPayout] = useState("");
-  const [progressPercent,setProgressPercent] = useState("");
+  const [amount, setAmount] = useState("0");
+  const [totalPayin, setTotalPayin] = useState("0");
+  const [totalPayout, setTotalPayout] = useState("0");
+  const [progressPercent,setProgressPercent] = useState("0");
 
   const [excels, setExcels] = useState("");
   const [role, setRole] = useState("");

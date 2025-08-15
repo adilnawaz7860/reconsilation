@@ -120,13 +120,24 @@ export default function ImportTable() {
     setStartDate(item.selection.startDate);
     setEndDate(item.selection.endDate);
   };
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
+  //       <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+  //     </div>
+  //   );
+  // }
+
+   const formatDateForAPI = (date :any) => {
+  if (!date) return null;
+  
+  // Use local timezone instead of UTC to avoid date shifting
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
+};
 
   return (
     <div className="w-full max-w-6xl overflow-x-auto rounded-[5px] bg-white px-7.5 pb-4 pt-7.5 shadow-md dark:bg-gray-900">
@@ -212,8 +223,11 @@ export default function ImportTable() {
                   ranges={range}
                   onChange={(item: any) => {
                     setRange([item.selection]);
-                    setStartDate(item.selection.startDate);
-                    setEndDate(item.selection.endDate);
+                       const formattedStartDate :any = formatDateForAPI(item.selection.startDate);
+    const formattedEndDate :any = formatDateForAPI(item.selection.endDate);
+                    setStartDate(formattedStartDate);
+                    setEndDate(formattedEndDate);
+                   
 
                     // Close only if both start and end dates are picked and they are not the same day
                     if (
