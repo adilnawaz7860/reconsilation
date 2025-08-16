@@ -8,12 +8,9 @@ import { OverviewCardsSkeleton } from "../overview-cards/skeleton";
 import StatusDonutChart from './status-donut'
 
 
-export function OverviewCardsGroup() {
+export function OverviewCardsGroup({setTotalPayout, setTotalPayin ,setProgressPercent, progressPercent, totalPayout, totalPayin ,amount ,setAmount} : any) {
   const [users, setUsers] = useState("");
-  const [amount, setAmount] = useState("0");
-  const [totalPayin, setTotalPayin] = useState("0");
-  const [totalPayout, setTotalPayout] = useState("0");
-  const [progressPercent,setProgressPercent] = useState("0");
+
 
   const [excels, setExcels] = useState("");
   const [role, setRole] = useState("");

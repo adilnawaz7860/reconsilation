@@ -115,3 +115,26 @@ export const getCurrentUser = async () => {
   });
   return res.data;
 };
+
+
+
+export const getallMerchants = async (page = 1, limit = 10, search = "", status = "") => {
+  const token = sessionStorage.getItem("token");
+
+  const params = new URLSearchParams();
+  if (search) params.append("search", search);
+  if (status && status.toLowerCase() !== "all") params.append("status", status);
+  params.append("page", page);
+  params.append("limit", limit);
+
+  const url = `${API}/get-users`;
+  console.log("Requesting:", url);
+
+  const res = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data;
+};

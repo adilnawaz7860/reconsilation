@@ -12,18 +12,18 @@ import {
 export default function StatusDonutChart({ progress }) {
   console.log(progress , "progress")
   // Extract values safely
-  const completed = progress?.completedCount || 0;
+  const success = progress?.successCount || 0;
   const failed = progress?.failedCount || 0;
   const pending = progress?.pendingCount || 0;
 
-  const total = completed + failed + pending;
+  const total = success + failed + pending;
 
   // If total is 0, show a single "No Data" slice
   const data =
     total === 0
       ? [{ name: "No Data", value: 1 }]
       : [
-          { name: "Success", value: completed },
+          { name: "Success", value: success },
           { name: "Failed", value: failed },
           { name: "Pending", value: pending },
         ];

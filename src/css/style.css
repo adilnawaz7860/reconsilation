@@ -63,6 +63,10 @@
   @apply !fill-dark-5 dark:!fill-dark-6;
 }
 
+.not-tailwind * {
+  all: revert;
+}
+
 .apexcharts-yaxis-label {
   @apply text-xs;
 }
