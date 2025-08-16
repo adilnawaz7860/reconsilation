@@ -26,7 +26,7 @@ export function useNavData() {
       items: [
         {
           title: "Dashboard",
-          url: "/",
+          url: "/dashboard",
           icon: Icons.Calendar,
           items: [],
         },

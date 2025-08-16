@@ -64,7 +64,7 @@ if (!mounted) return null;
     // router.push("/dashboard");
 
   } catch (err: any) {
-    toast.error(err.message || "Something went wrong");
+    toast.error(err.response?.data?.message || "Something went wrong");
   } finally {
     setSubmitting(false);
   }

@@ -22,7 +22,7 @@ const formatDate = (dateStr?: string) => {
   }).format(date);
 };
 
-export default function ViewTransactionModal({ open, onClose, transaction }: Props) {
+export default function CreateExcelModal({ open, onClose, transaction }: Props) {
   const modalRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -72,12 +72,12 @@ export default function ViewTransactionModal({ open, onClose, transaction }: Pro
     >
       <div 
         ref={modalRef}
-        className="z-[9999] absolute top-1/2 left-1/2 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white dark:bg-gray-900 p-6 shadow-lg"
+        className="z-[9999] absolute top-1/2 left-1/2 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white dark:bg-gray-900 p-6 shadow-lg"
       >
         {/* Header with download and close buttons */}
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-xl font-semibold text-dark dark:text-white">
-            Transaction Details
+            Excel Details
           </h2>
           {/* Hide buttons when downloading */}
           {!isDownloading && (
@@ -105,27 +105,24 @@ export default function ViewTransactionModal({ open, onClose, transaction }: Pro
           )}
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-1 grid grid-cols-2 gap-2 space-x-4">
           <DetailRow label="Transaction ID" value={transaction.transactionid} />
-          <DetailRow label="Order ID" value={transaction.orderid} />
+          <DetailRow label="Merchant ID" value={transaction.merchantId?._id || "00000"} />
           <DetailRow label="Amount" value={`₹${transaction.amount?.toFixed(2)}`} />
-          <DetailRow label="Type" value={transaction.type} />
+          <DetailRow label="Payer VPA" value={transaction?.payerVpa} />
+                              <DetailRow label="Payer Name" value={transaction?.payerName} />
+
+                    <DetailRow label="Payer Mobile" value={transaction?.payerMobile} />
+                       <DetailRow label="Customer VPA" value={transaction?.customerVpa} />
+                          <DetailRow label="Customer Name" value={transaction?.customerName} />
+
+
           <DetailRow 
             label="Merchant Email" 
             value={transaction.merchantId?.email || "N/A"} 
           />
           <DetailRow label="UTR" value={transaction.utr || "N/A"} />
-          <DetailRow 
-            label="isMatched" 
-            value={
-              <span className={`capitalize ${
-                transaction.matched  ? "text-green-600" :
-                transaction.matched === "PENDING" ? "text-yellow-500" : "text-red-500"
-              }`}>
-                {transaction.matched ? "MATCHED" : "UNMATCHED"}
-              </span>
-            } 
-          />
+             <DetailRow label="Settled Amount" value={transaction.netSettlementAmt} />
            <DetailRow 
             label="Status" 
             value={
@@ -137,7 +134,11 @@ export default function ViewTransactionModal({ open, onClose, transaction }: Pro
               </span>
             } 
           />
-          <DetailRow label="Created At" value={formatDate(transaction.createdAt)} />
+           <DetailRow label="Transaction Time" value={formatDate(transaction.trxTime)} />
+                    <DetailRow label="Created At" value={formatDate(transaction.createdAt)} />
+                     
+
+        
         </div>
 
         {/* Show loading indicator when downloading */}
@@ -149,9 +150,9 @@ export default function ViewTransactionModal({ open, onClose, transaction }: Pro
 
 // Helper component for consistent styling
 const DetailRow = ({ label, value }: { label: string; value: string | React.ReactNode }) => (
-  <div className="flex justify-between items-start border-b border-gray-200 pb-3">
+  <div className="flex flex-col justify-between items-start border-b border-gray-200 pb-3">
     <span className="font-medium text-gray-700 dark:text-gray-300">{label}:</span>
-    <span className="text-gray-900 dark:text-white text-right max-w-[60%]">
+    <span className="text-gray-900 dark:text-white text-right max-w-full">
       {value}
     </span>
   </div>

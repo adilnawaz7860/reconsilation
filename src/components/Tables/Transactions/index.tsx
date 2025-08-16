@@ -215,7 +215,7 @@ export default function LatestTransactionsTable() {
 
       {/* Table container for responsiveness */}
       <div className="overflow-x-auto">
-        <Table className="min-h-[500px]">
+         <Table className={`${showDatePicker ? "min-h-[500px]" : ""}`}>
           <TableHeader>
             <TableRow className="[&>th]:text-center">
               <TableHead className="whitespace-nowrap text-left">
@@ -224,20 +224,28 @@ export default function LatestTransactionsTable() {
               <TableHead className="whitespace-nowrap text-left">
                 Order ID
               </TableHead>
-              <TableHead className="whitespace-nowrap text-left">
-                Amount
+               <TableHead className="whitespace-nowrap text-left">
+                Merchant ID
               </TableHead>
+               <TableHead className="whitespace-nowrap text-left">
+                Merchant Name
+              </TableHead>
+             
+               {/* <TableHead className="whitespace-nowrap text-left">
+                Excel Amount
+              </TableHead> */}
               <TableHead className="whitespace-nowrap text-center">
                 Type
               </TableHead>
-              <TableHead className="whitespace-nowrap text-center">
-                Email
-              </TableHead>
+              
               <TableHead className="whitespace-nowrap text-center">
                 UTR
               </TableHead>
               <TableHead className="whitespace-nowrap text-center">
                 Amount (₹)
+              </TableHead>
+                <TableHead className="whitespace-nowrap text-center">
+                isMatched
               </TableHead>
               <TableHead className="whitespace-nowrap text-center">
                 Status
@@ -274,16 +282,34 @@ export default function LatestTransactionsTable() {
                   <TableCell className="whitespace-nowrap">
                     {tx.orderid}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
-                    {tx.amount}
+                    <TableCell className="whitespace-nowrap">
+                    {tx?.merchantId?._id}
                   </TableCell>
+                    <TableCell className="whitespace-nowrap capitalize">
+                  {tx?.merchantId?.fullName}
+                  </TableCell>
+                
+                   {/* <TableCell className="whitespace-nowrap">
+                     ₹{tx?.excelAmount?.toFixed(2) || "00.00"}
+                  </TableCell> */}
                   <TableCell className="whitespace-nowrap">{tx.type}</TableCell>
-                  <TableCell className="whitespace-nowrap">
-                    {tx.merchantid?.email}
-                  </TableCell>
+               
                   <TableCell className="whitespace-nowrap">{tx.utr}</TableCell>
                   <TableCell className="whitespace-nowrap">
                     ₹{tx.amount.toFixed(2)}
+                  </TableCell>
+                   <TableCell className="text-center">
+                    <span
+                      className={`text-sm font-medium capitalize ${
+                        tx.matched 
+                          ? "text-green-600"
+                          : tx.status === "PENDING"
+                            ? "text-yellow-500"
+                            : "text-red-500"
+                      }`}
+                    >
+                      {tx.matched ? "MATCHED" : "UNMATCHED"}
+                    </span>
                   </TableCell>
                   <TableCell className="text-center">
                     <span

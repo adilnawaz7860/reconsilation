@@ -1,13 +1,12 @@
 "use client";
-import dynamic from "next/dynamic"; // ✅ this is missing
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import NextTopLoader from "nextjs-toploader";
 import { Sidebar } from "@/components/Layouts/sidebar";
 import { Header } from "@/components/Layouts/header";
 import { Providers } from "../providers";
-import {Toaster} from 'sonner'
-
+import { Toaster } from 'sonner'
 import "jsvectormap/dist/jsvectormap.css";
 
 const Layout = ({ children }) => {
@@ -18,9 +17,9 @@ const Layout = ({ children }) => {
     const token = sessionStorage.getItem("token");
 
     if (!token) {
-      router.replace("/auth/sign-in"); // Redirect if no token
+      router.replace("/auth/sign-in");
     } else {
-      setLoading(false); // Token found, show layout
+      setLoading(false);
     }
   }, [router]);
 
@@ -36,15 +35,23 @@ const Layout = ({ children }) => {
     <Providers>
       <NextTopLoader color="#5750F1" showSpinner={false} />
       <div className="flex min-h-screen">
-        <Sidebar />
-        <div className="w-full flex-1 bg-gray-2 dark:bg-[#020d1a]">
+        {/* Sidebar wrapper - override positioning for desktop fixed behavior */}
+        <div className="lg:fixed lg:left-0 lg:top-0  lg:h-screen lg:z-30">
+          <Sidebar />
+        </div>
+        
+        {/* Main content area with left margin on desktop */}
+        <div className="flex-1 w-full bg-gray-2 dark:bg-[#020d1a] lg:ml-[175px]">
           <Header />
           <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden p-4 md:p-6 2xl:p-10">
             {children}
           </main>
         </div>
       </div>
-<div className="z-[2000]"><Toaster richColors position="top-right"  /></div>
+      
+      <div className="z-[2000]">
+        <Toaster richColors position="top-right" />
+      </div>
     </Providers>
   );
 };
