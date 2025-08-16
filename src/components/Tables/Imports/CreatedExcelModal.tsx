@@ -46,7 +46,7 @@ export default function CreateExcelModal({ open, onClose, transaction }: Props) 
     const image = canvas.toDataURL("image/png");
     const link = document.createElement("a");
     link.href = image;
-    link.download = `transaction-${transaction.transactionid}-${new Date().toISOString()}.png`;
+    link.download = `excel-${transaction.transactionid}-${new Date().toISOString()}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

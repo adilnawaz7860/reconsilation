@@ -216,9 +216,9 @@ export default function LatestTransactionsTable() {
       {/* Table container for responsiveness */}
       <div className="overflow-x-auto">
          <Table className={`${showDatePicker ? "min-h-[500px]" : ""}`}>
-          <TableHeader>
+          <TableHeader className="text-sm">
             <TableRow className="[&>th]:text-center">
-              <TableHead className="whitespace-nowrap text-left">
+              <TableHead className="whitespace-nowrap text-sm text-left">
                 Transaction ID
               </TableHead>
               <TableHead className="whitespace-nowrap text-left">
@@ -262,7 +262,7 @@ export default function LatestTransactionsTable() {
             </TableRow>
           </TableHeader>
 
-          <TableBody>
+          <TableBody className="text-sm">
             {loading ? (
               Array.from({ length: rowsPerPage }).map((_, idx) => (
                 <TableRow key={idx}>
@@ -275,7 +275,7 @@ export default function LatestTransactionsTable() {
               ))
             ) : transactions?.length > 0 ? (
               transactions.map((tx: any) => (
-                <TableRow key={tx._id}>
+                <TableRow className="text-sm" key={tx._id}>
                   <TableCell className="whitespace-nowrap">
                     {tx.transactionid}
                   </TableCell>

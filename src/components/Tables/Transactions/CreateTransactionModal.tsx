@@ -151,7 +151,7 @@ export default function ViewTransactionModal({ open, onClose, transaction }: Pro
 const DetailRow = ({ label, value }: { label: string; value: string | React.ReactNode }) => (
   <div className="flex justify-between items-start border-b border-gray-200 pb-3">
     <span className="font-medium text-gray-700 dark:text-gray-300">{label}:</span>
-    <span className="text-gray-900 dark:text-white text-right max-w-[60%]">
+    <span className="text-gray-900 dark:text-white text-right">
       {value}
     </span>
   </div>

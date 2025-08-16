@@ -24,6 +24,8 @@ export default  function Home({ searchParams }: PropsType) {
   const router = useRouter();
     const [merchants ,setMerchants] = useState([]);
   const [filteredMerchants, setFilteredMerchants] = useState<any[]>([]);
+     const [selectedMerchantName, setSelectedMerchantName] = useState<string | null>(null);
+
    const [selectedMerchant, setSelectedMerchant] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -48,26 +50,38 @@ export default  function Home({ searchParams }: PropsType) {
     fetchUsers();
   }, []);
 
-  const handleSelectMerchant = async (merchant: any , startDate :any ,endDate:any) => {
+ const handleSelectMerchant = async (
+  merchant: any,
+  startDate?: string,
+  endDate?: string
+) => {
+  // if merchant is an object
+  if (typeof merchant === "object") {
+    setSelectedMerchantName(merchant.fullName);
     setSelectedMerchant(merchant._id);
-    setOpen(false);
 
-    // 👇 call API with ID
-    try {
-      const res = await getAllTransactionsCount(merchant._id, startDate ,endDate);
-      setTotalPayin(res?.data?.totalPayin);
-         setAmount(res?.data?.totalAmount);
-            setTotalPayout(res?.data?.totalPayout);
-            setProgressPercent(res.data)
+    const res = await getAllTransactionsCount(merchant._id, startDate, endDate);
+    setTotalPayin(res?.data?.totalPayin);
+    setAmount(res?.data?.totalAmount);
+    setTotalPayout(res?.data?.totalPayout);
+    setProgressPercent(res.data);
+  }
 
-      console.log("Merchant details:", res);
-    } catch (err) {
-      console.error("Error fetching merchant details:", err);
-    }
-  };
+  // if merchant is just an id
+  if (typeof merchant === "string") {
+    const res = await getAllTransactionsCount(merchant, startDate, endDate);
+    setTotalPayin(res?.data?.totalPayin);
+    setAmount(res?.data?.totalAmount);
+    setTotalPayout(res?.data?.totalPayout);
+    setProgressPercent(res.data);
+  }
+};
+
 
   const handleClear = async() => {
   setSelectedMerchant(null);
+    setSelectedMerchantName(null);
+
  
    setRange([{
         startDate: null,
@@ -174,7 +188,7 @@ export default  function Home({ searchParams }: PropsType) {
   // 👇 only call API when a valid range is selected
   if (item.selection.startDate && item.selection.endDate) {
     handleSelectMerchant(
-      selectedMerchant ? { _id: selectedMerchant, fullName: selectedMerchant } : "",
+      selectedMerchant ? selectedMerchant : "",
       formattedStartDate,
       formattedEndDate
     );
@@ -205,7 +219,7 @@ export default  function Home({ searchParams }: PropsType) {
         onClick={() => setOpen((prev) => !prev)}
         className="w-full border border-primary border-x-4 border-y-2 rounded-lg px-4 py-2 flex justify-between items-center dark:bg-dark-2 dark:text-white text-dark-2 bg-white shadow-sm"
       >
-        {selectedMerchant ? selectedMerchant : "Select Merchant"}
+        {selectedMerchantName ? selectedMerchantName : "Select Merchant"}
         <span className="ml-2"><ChevronDown/></span>
       </button>
 
@@ -217,7 +231,7 @@ export default  function Home({ searchParams }: PropsType) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute mt-2 w-full bg-white border rounded-lg shadow-lg z-50"
+            className="absolute mt-2 w-full bg-white dark:bg-dark-2 border rounded-lg shadow-lg z-50"
           >
             {/* Search Box */}
             <div className="p-2">
@@ -226,7 +240,7 @@ export default  function Home({ searchParams }: PropsType) {
                 value={search}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Search merchant..."
-                className="w-full border rounded px-2 py-1 focus:outline-none"
+                className="w-full dark:bg-dark-2 bg-white border rounded px-2 py-1 focus:outline-none"
               />
             </div>
 

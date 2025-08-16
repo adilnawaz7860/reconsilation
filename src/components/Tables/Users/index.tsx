@@ -167,7 +167,7 @@ export default function UserTable() {
                 <TableCell className="text-left">{user.fullName}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone}</TableCell>
-                <TableCell>
+                <TableCell style={{padding : "0.5rem"}} className="p-2">
                   <Switch
                     withIcon
                     checked={user.status === "ACTIVE"}
@@ -187,7 +187,7 @@ export default function UserTable() {
                       }
                     }}
                   />
-                  <span className="ml-2">{user.status}</span>
+                 
                 </TableCell>
                 <TableCell>{formatDate(user.createdAt)}</TableCell>
                 <TableCell>
